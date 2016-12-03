@@ -2,11 +2,29 @@
 #define _LEXER_H
 
 #include<cstdlib>
+#include<iostream>
+using namespace std;
 
-/* 关键字表 */
-enum KW_Table
+#define getch() (ch=getc(fin))  //从源文件中读取一个字符
+#define is_nondigit(c) ((c >= 'a' && c <= 'z') ||(c >= 'A' && c <= 'Z') ||c == '_')  //判断c是否为字母(a-z,A-Z)或下划线(-)
+#define is_digit(c)   (c >= '0' && c <= '9')
+
+int ch_to_num(char ch);
+int identifier(FILE *fin);
+int state_check(int state, int ch_code);
+int  state_change(int state, char ch);
+int search(string token);
+int end_state_to_code(int state_before, string token);
+
+//0为标识符类码
+//1为字符常数类码
+//2为字符串常量类码
+//3为数字常量
+
+/* 关键字类码表 */
+enum KW_Table //KeyWords
 {
-    KW_auto=3,
+    KW_auto=4,
     KW_break,
     KW_case,
     KW_char,
@@ -45,10 +63,10 @@ enum KW_Table
     KW__Imaginary,
 };
 
-/* 界符表 *//* 运算符及分隔符 */
-enum BS_Table
+/* 界符类码表 */
+enum PT_Table  //Punctuators
 {
-	TK_OPENBR=40,	// [ 左中括号
+	TK_OPENBR=41,	// [ 左中括号
 	TK_CLOSEBR,		// ] 右圆括号
 	TK_OPENPA,		// ( 左圆括号
 	TK_CLOSEPA,		// ) 右圆括号
@@ -110,12 +128,26 @@ enum BS_Table
                     // %:%:
 };
 
+
+#define KW_TOKEN_NUM  TK_HASH2+1
+//静态类码查询表 （根据类码查询关键字与界符）
+
 /* 单词存储结构定义 */
-typedef struct TkWord
+typedef struct TokenTableType
 {
     int    Hashcode;					// 单词编码
     //struct TkWord *next;			// 指向哈希冲突的其它单词
-    char * spelling;					// 单词字符串
-}TkWord;
+    string spelling;					// 单词字符串
+}TokenTableType;
+
+
+typedef struct TokenListType
+{
+	int Ch_class;   //分类码
+	int Ch_code;    //语义码
+	string spelling;
+	//struct TokenListType *next;
+
+}TokenListType;
 
 #endif // _LEXER_H

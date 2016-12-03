@@ -24,7 +24,6 @@
   <ItemGroup>
     <ClCompile Include="..\src\lexer.cpp" />
     <ClCompile Include="..\src\main.cpp" />
-    <ClCompile Include="..\src\token_table.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B724D98A-7A86-4A93-972C-F7751C3086D5}</ProjectGuid>
