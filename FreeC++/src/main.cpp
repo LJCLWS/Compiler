@@ -3,6 +3,7 @@
 #include<iterator>
 #include "lexer.h"
 #include "parser_.h"
+#include "semantic.h"
 #include <queue>
 
 #pragma warning(disable:4996)
@@ -27,6 +28,10 @@ int main(int argc, char ** argv)
 	//语法分析器
 	init_parser();
 	expression_parser();
+
+	//中间代码生成
+	//Sem_init_parser();
+	//Sem_expression_parser();
 
 	////token序列输出
 	//while (TokenListQueue.size())

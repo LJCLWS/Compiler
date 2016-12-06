@@ -7,9 +7,6 @@
 
 using namespace std;
 
-extern queue<TokenListType> TokenListQueue;
-stack<int> TempRulesStack;
-
 const vector<int> gramer[9]=
 {
 	{0},
@@ -23,7 +20,8 @@ const vector<int> gramer[9]=
 	{T_LEFT,NT_E,T_RIGHT}
 };
 
-vector<int> temp_gramer;
+extern queue<TokenListType> TokenListQueue;
+stack<int> TempRulesStack;
 TokenListType temp_token;
 int temp_terminal = 0;
 
@@ -40,17 +38,17 @@ int init_parser()
 	return 0;
 }
 
-int i = 0;
 int expression_parser()
 {
 	int temp_rule = 0;
 	int choose_way = 0;
+	vector<int> temp_gramer;
 		
 	//语法分析栈出栈
 	temp_rule = TempRulesStack.top();
 	TempRulesStack.pop();
 
-	if (temp_rule >= T_I &&temp_rule <= T_RIGHT) {  //是终结符
+	if (temp_rule >0&& temp_rule!=BOTH_END) {  //是终结符
 		if (temp_rule == temp_terminal) {
 			//token序号出队列
 			temp_token = TokenListQueue.front();
@@ -61,7 +59,7 @@ int expression_parser()
 		}
 	}
 	
-	else if (temp_rule >= NT_F&& temp_rule <= NT_E)  //是非终结符
+	else if (temp_rule <0)  //是非终结符
 	{
 		if (choose_way = LookUp(temp_rule, temp_terminal))
 		{
@@ -94,7 +92,6 @@ int expression_parser()
 		return -1;  //error
 	}
 	
-	//cout << i++ << endl;
 }
 
 

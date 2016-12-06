@@ -9,7 +9,6 @@ typedef struct GrammerType {
 
 
 
-
 #define NT_E   -1
 #define NT_E1  -2
 #define NT_T   -3
@@ -20,8 +19,8 @@ typedef struct GrammerType {
 #define T_I       1
 #define T_W0      2
 #define T_W1      3
-#define T_LEFT    4
-#define T_RIGHT   5
+#define T_LEFT    TK_OPENPA
+#define T_RIGHT   TK_CLOSEPA
 
 #define BOTH_END   TK_SEMICOLON //TK_HASH
 

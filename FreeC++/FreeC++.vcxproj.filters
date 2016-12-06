@@ -24,12 +24,18 @@
     <ClCompile Include="src\parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\semantic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\lexer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\parser_.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\semantic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

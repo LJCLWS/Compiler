@@ -149,10 +149,12 @@
     <ClCompile Include="src\lexer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\parser.cpp" />
+    <ClCompile Include="src\semantic.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\lexer.h" />
     <ClInclude Include="src\parser_.h" />
+    <ClInclude Include="src\semantic.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
