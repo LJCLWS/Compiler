@@ -31,19 +31,24 @@ stack<int> Sem_TempRulesStack;
 TokenListType Sem_temp_token;
 int Sem_temp_terminal = 0;
 
+stack<string> Sem_TempSem;
+FourQtType Sem_TempFourQt;
+queue<FourQtType> Sem_TempQT;
+
 int Sem_init_parser()
 {
 	Sem_TempRulesStack.push(BOTH_END);
 	Sem_TempRulesStack.push(NT_E);
-
+	//Sem_TempFourQt.ttt = 0;   //四元式t1
 	//token序号出队列
 	Sem_temp_token = TokenListQueue.front();
 	TokenListQueue.pop();
 	Sem_temp_terminal = token_to_gramer(Sem_temp_token.Ch_class);
 
+	cout << endl << endl;
 	return 0;
 }
-
+extern TokenTableType TokenTable[KW_TOKEN_NUM];
 int Sem_expression_parser()
 {
 	int temp_rule = 0;
@@ -56,12 +61,20 @@ int Sem_expression_parser()
 
 	if (temp_rule >0 && temp_rule != BOTH_END) {  //是终结符
 		if (temp_rule == Sem_temp_terminal) {
+			
+		    if (Sem_temp_terminal == T_I) //PUSH
+		    {
+				Sem_TempSem.push(Sem_temp_token.spelling);
+				//语法分析栈出栈
+				temp_rule = Sem_TempRulesStack.top();
+				Sem_TempRulesStack.pop();
+		    }
 			//token序号出队列
 			Sem_temp_token = TokenListQueue.front();
 			TokenListQueue.pop();
 			Sem_temp_terminal = Sem_token_to_gramer(Sem_temp_token.Ch_class);
 
-			Sem_expression_parser();
+			return Sem_expression_parser();
 		}
 	}
 
@@ -75,7 +88,7 @@ int Sem_expression_parser()
 				Sem_TempRulesStack.push(temp_gramer.back());
 				temp_gramer.pop_back();
 			}
-			Sem_expression_parser();
+			return Sem_expression_parser();
 		}
 
 		else
@@ -86,25 +99,38 @@ int Sem_expression_parser()
 	}
 
 
-	else if (temp_rule >= GEQ_DIVIDE&&temp_rule >= GEQ_PLUS);//GEQ
-	else if (temp_rule == PUSH_I);//PUSH
+	else if ((temp_rule >= GEQ_STAR) && (temp_rule <= GEQ_DIVIDE))//GEQ
+	{
+		if(temp_rule== GEQ_DIVIDE)Sem_TempFourQt.operation = TokenTable[T_DIVIDE].spelling;
+		else Sem_TempFourQt.operation = TokenTable[temp_rule + (TK_STAR - GEQ_STAR)].spelling;
 
+		Sem_TempFourQt.bbb = Sem_TempSem.top();
+		Sem_TempSem.pop();
 
-	else if (temp_rule == T_NULL)Sem_expression_parser();
+		Sem_TempFourQt.aaa = Sem_TempSem.top();
+		Sem_TempSem.pop();
+
+		Sem_TempFourQt.ttt+="t";
+		Sem_TempSem.push(Sem_TempFourQt.ttt);
+
+		Sem_TempQT.push(Sem_TempFourQt);
+
+		return Sem_expression_parser();
+	}
+
+	else if (temp_rule == T_NULL)return Sem_expression_parser();
+	
 	else if (temp_rule == BOTH_END)
 	{
-		cout << "alnayze success" << endl;
+		cout << "syntax alnayze successful" << endl;
 		return 0;//success
 	}
 
-
 	else
 	{
-		cout << "alnayze failed" << endl;
-		return -1;  //error
+		cout << "syntax alnayze failed" << endl;
+		return -1;//error
 	}
-
-	//cout << i++ << endl;
 }
 
 //+- token(53,54)    
@@ -181,4 +207,15 @@ int Sem_LookUp(int stack, int queue)
 	return choose_way;
 }
 
+void Sem_outprint()
+{
+	cout << endl << "四元式如下：" << endl;
+	while (Sem_TempQT.size())
+	{
+		FourQtType t = Sem_TempQT.front();
+		Sem_TempQT.pop();
+		cout << "(" << t.operation.c_str() << "," << t.aaa.c_str() << ","<< t.bbb.c_str()<< ","<< t.ttt.c_str()<<")" <<endl;
+		
+	} 
+}
 

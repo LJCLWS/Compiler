@@ -16,6 +16,8 @@ int state_check(int state, int ch_code);
 int  state_change(int state, char ch);
 int search(string token);
 int end_state_to_code(int state_before, string token);
+void Lexer_output(void);
+void color_token(void);
 
 //0为标识符类码
 //1为字符常数类码

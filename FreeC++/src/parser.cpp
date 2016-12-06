@@ -35,6 +35,7 @@ int init_parser()
 	TokenListQueue.pop();
 	temp_terminal = token_to_gramer(temp_token.Ch_class);
 
+	cout << endl << endl;
 	return 0;
 }
 
@@ -81,14 +82,14 @@ int expression_parser()
 	else if(temp_rule == T_NULL)expression_parser();
 	else if (temp_rule == BOTH_END)
 	{
-		cout << "alnayze success" << endl;
+		cout << "syntax alnayze successful" << endl;
 		return 0;//success
 	}
 
 
 	else
 	{
-		cout << "alnayze failed" << endl;
+		cout << "syntax alnayze failed" << endl;
 		return -1;  //error
 	}
 	

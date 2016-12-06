@@ -9,9 +9,8 @@
 #pragma warning(disable:4996)
 
 using namespace std;
-FILE *fin = NULL;
-extern queue<TokenListType> TokenListQueue;
 
+FILE *fin = NULL;
 
 int main(int argc, char ** argv)
 {
@@ -23,23 +22,19 @@ int main(int argc, char ** argv)
 		return 0;
 	}
 	
-	identifier(fin);//词法处理机
+	//词法处理机
+	identifier(fin);
+
+	//Lexer_output(); //token序列输出
 
 	//语法分析器
-	init_parser();
-	expression_parser();
+	//init_parser();
+	//expression_parser();
 
 	//中间代码生成
-	//Sem_init_parser();
-	//Sem_expression_parser();
-
-	////token序列输出
-	//while (TokenListQueue.size())
-	//{
-	//	TokenListType t = TokenListQueue.front();
-	//	TokenListQueue.pop();
-	//	cout << "<"<<t.Ch_class << "," << t.Ch_code<< ","<< t.spelling.c_str()<< ">" <<endl;
-	//} 
+	Sem_init_parser();
+	if(!Sem_expression_parser()) 
+		Sem_outprint();
 
 	return 0;
 }

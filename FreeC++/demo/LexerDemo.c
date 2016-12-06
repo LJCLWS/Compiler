@@ -1,3 +1,6 @@
+
+
+
 int  main (void)
 {
    int   a=1, d=88.2,c;

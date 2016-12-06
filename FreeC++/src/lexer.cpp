@@ -2,6 +2,7 @@
 #include <queue>
 #include <cstring>
 #include <iostream>
+#include <windows.h>
 
 using namespace std;
 
@@ -114,6 +115,7 @@ TokenTableType TokenTable[KW_TOKEN_NUM] =
 
 	};
 
+//词法分析器
 int identifier(FILE *fin)
 {
 	    state = 1;
@@ -125,6 +127,7 @@ int identifier(FILE *fin)
 			state = state_change(state, ch);
 			if (state) {
 				if(state>1)token += ch;// 记录字符串;
+			    else cout << ch;
 			}
 			else
 			{				
@@ -132,6 +135,8 @@ int identifier(FILE *fin)
 				TempToken.Ch_code = 0;
 				TempToken.spelling = token;
 				if(TempToken.Ch_class>=0)TokenListQueue.push(TempToken);
+
+				color_token();
 
 				state = 1;
 				ungetc(ch, fin);
@@ -403,4 +408,41 @@ int ch_to_num(char ch)
 	if (ch == '\"')         return 29;
 	
 	else return -1;
+}
+
+//token序列输出
+void Lexer_output(void)
+{
+	cout << endl<< "token list:" << endl;
+	while (TokenListQueue.size())
+	{
+		TokenListType t = TokenListQueue.front();
+		TokenListQueue.pop();
+		cout << "<" << t.Ch_class << "," << t.Ch_code << ">" << "	";// << "," << t.spelling.c_str() << ">" << endl;
+	} 
+	cout << endl;
+}
+
+
+//词法着色
+void color_token(void)
+{
+	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+	char *p;
+	    if (TempToken.Ch_class == 0)     //标识符
+			SetConsoleTextAttribute(h, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+		else if (TempToken.Ch_class == 1)  //字符常量
+			SetConsoleTextAttribute(h, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+		else if (TempToken.Ch_class == 2)  //字符串常量
+			SetConsoleTextAttribute(h, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+		else if (TempToken.Ch_class == 3)  //数字常量
+			SetConsoleTextAttribute(h, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+		else if (TempToken.Ch_class <= KW__Imaginary&& TempToken.Ch_class >=KW_auto)//关键字
+			SetConsoleTextAttribute(h, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+		else if (TempToken.Ch_class <= TK_HASH2 && TempToken.Ch_class >= TK_OPENBR)//界符
+			SetConsoleTextAttribute(h, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
+		else
+			SetConsoleTextAttribute(h, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+
+		cout << TempToken.spelling.c_str();
 }
