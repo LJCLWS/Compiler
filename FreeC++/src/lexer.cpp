@@ -128,9 +128,9 @@ int identifier(FILE *fin)
 			state = state_change(state, ch);
 			if (state) {
 				if(state>1)token += ch;// 记录字符串;
-				else if (state <=-1) //非法输入
+				else if (state <=0) //非法输入
 				{
-					outprint_error(state);
+					token_error(state);
 					return ERROR;
 				}
 			    else cout << ch;//输出空格与换行

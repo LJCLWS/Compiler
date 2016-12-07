@@ -60,9 +60,14 @@ int Sem_expression_parser()
 	temp_rule = Sem_TempRulesStack.top();
 	Sem_TempRulesStack.pop();
 
-	if (temp_rule >0 && temp_rule != BOTH_END) {  //是终结符
+	if (temp_rule >0) {  //是终结符
 		if (temp_rule == Sem_temp_terminal) {
-			
+		     if (Sem_temp_terminal == BOTH_END)
+		    {
+			cout << "syntax alnayze successful" << endl;
+			return 0;//success
+		    }
+
 		    if (Sem_temp_terminal == T_I) //PUSH
 		    {
 				Sem_TempSem.push(Sem_temp_token.spelling);
@@ -77,55 +82,55 @@ int Sem_expression_parser()
 
 			return Sem_expression_parser();
 		}
-	}
-
-	else if (temp_rule >= NT_F&& temp_rule <= NT_E)  //是非终结符
-	{
-		if ((choose_way = Sem_LookUp(temp_rule, Sem_temp_terminal))>0)
-		{
-			//倒序入栈
-			temp_gramer = gramer[choose_way];
-			while (temp_gramer.size()) {
-				Sem_TempRulesStack.push(temp_gramer.back());
-				temp_gramer.pop_back();
-			}
-			return Sem_expression_parser();
-		}
-
 		else
 		{
-			syntax_error(choose_way);
-			return ERROR;// error;
+			syntax_error(MATCH_ERROR);
 		}
 	}
 
-
-	else if ((temp_rule >= GEQ_STAR) && (temp_rule <= GEQ_DIVIDE))//GEQ
+	else if (temp_rule < 0) //是非终结符
 	{
-		if(temp_rule== GEQ_DIVIDE)Sem_TempFourQt.operation = TokenTable[T_DIVIDE].spelling;
-		else Sem_TempFourQt.operation = TokenTable[temp_rule + (TK_STAR - GEQ_STAR)].spelling;
+		 if (temp_rule >= NT_F&& temp_rule <= NT_E)  //是非终结符
+		{
+			if ((choose_way = Sem_LookUp(temp_rule, Sem_temp_terminal))>0)
+			{
+				//倒序入栈
+				temp_gramer = gramer[choose_way];
+				while (temp_gramer.size()) {
+					Sem_TempRulesStack.push(temp_gramer.back());
+					temp_gramer.pop_back();
+				}
+				return Sem_expression_parser();
+			}
 
-		Sem_TempFourQt.bbb = Sem_TempSem.top();
-		Sem_TempSem.pop();
+			else
+			{
+				return ERROR;// error;
+			}
+		}
 
-		Sem_TempFourQt.aaa = Sem_TempSem.top();
-		Sem_TempSem.pop();
 
-		Sem_TempFourQt.ttt+="t";
-		Sem_TempSem.push(Sem_TempFourQt.ttt);
+		else if ((temp_rule >= GEQ_STAR) && (temp_rule <= GEQ_DIVIDE))//GEQ
+		{
+			if (temp_rule == GEQ_DIVIDE)Sem_TempFourQt.operation = TokenTable[T_DIVIDE].spelling;
+			else Sem_TempFourQt.operation = TokenTable[temp_rule + (TK_STAR - GEQ_STAR)].spelling;
 
-		Sem_TempQT.push(Sem_TempFourQt);
+			Sem_TempFourQt.bbb = Sem_TempSem.top();
+			Sem_TempSem.pop();
 
-		return Sem_expression_parser();
+			Sem_TempFourQt.aaa = Sem_TempSem.top();
+			Sem_TempSem.pop();
+
+			Sem_TempFourQt.ttt += "t";
+			Sem_TempSem.push(Sem_TempFourQt.ttt);
+
+			Sem_TempQT.push(Sem_TempFourQt);
+
+			return Sem_expression_parser();
+		}
 	}
 
 	else if (temp_rule == T_NULL)return Sem_expression_parser();
-	
-	else if (temp_rule == BOTH_END)
-	{
-		cout << "syntax alnayze successful" << endl;
-		return 0;//success
-	}
 
 	else
 	{
@@ -157,8 +162,7 @@ int Sem_LookUp(int stack, int queue)
 		if (queue == T_I || queue == T_LEFT)choose_way = 1;
 		else
 		{
-			choose_way = LOOKUP_ERROR0;//error
-			lookup_error(choose_way);
+			choose_way = syntax_error(LOOKUP_ERROR0);//error
 		}
 		break;
 	case NT_E1:
@@ -167,16 +171,14 @@ int Sem_LookUp(int stack, int queue)
 		else if (queue == T_RIGHT || queue == BOTH_END)choose_way = 4;
 		else
 		{
-			choose_way = LOOKUP_ERROR1;//error
-			lookup_error(choose_way);
+			choose_way = syntax_error(LOOKUP_ERROR1);//error
 		}
 		break;
 	case NT_T:
 		if (queue == T_I || queue == T_LEFT)choose_way = 5;
 		else
 		{
-			choose_way = LOOKUP_ERROR2;//error
-			lookup_error(choose_way);
+			choose_way = syntax_error(LOOKUP_ERROR2);//error
 		}
 		break;
 	case NT_T1:
@@ -185,8 +187,7 @@ int Sem_LookUp(int stack, int queue)
 		else if (queue == T_PLUS || queue == T_MINUS || queue == T_RIGHT || queue == BOTH_END) choose_way = 8;
 		else
 		{
-			choose_way = LOOKUP_ERROR3;//error
-			lookup_error(choose_way);
+			choose_way = syntax_error(LOOKUP_ERROR3);//error
 		}
 		break;
 	case NT_F:
@@ -194,13 +195,11 @@ int Sem_LookUp(int stack, int queue)
 		else if (queue == T_LEFT)return 10;
 		else
 		{
-			choose_way = LOOKUP_ERROR4;//error
-			lookup_error(choose_way);
+			choose_way = syntax_error(LOOKUP_ERROR4);//error
 		}
 		break;
 	default:
-		choose_way = LOOKUP_ERROR5;//error
-		lookup_error(choose_way);
+		choose_way = syntax_error(LOOKUP_ERROR5);//error
 		break;
 	}
 

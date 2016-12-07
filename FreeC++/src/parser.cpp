@@ -49,8 +49,13 @@ int expression_parser()
 	temp_rule = TempRulesStack.top();
 	TempRulesStack.pop();
 
-	if (temp_rule >0&& temp_rule!=BOTH_END) {  //是终结符
+	if (temp_rule >0) {  //是终结符
 		if (temp_rule == temp_terminal) {
+			if (temp_rule == BOTH_END)
+			{
+				cout << "syntax alnayze successful" << endl;
+				return 0;//success
+			}
 			//token序号出队列
 			temp_token = TokenListQueue.front();
 			TokenListQueue.pop();
@@ -58,6 +63,7 @@ int expression_parser()
 
 			expression_parser();
 		}
+		else cout << "error";
 	}
 	
 	else if (temp_rule <0)  //是非终结符
@@ -80,13 +86,7 @@ int expression_parser()
 		}
 	}
 	else if(temp_rule == T_NULL)expression_parser();
-	else if (temp_rule == BOTH_END)
-	{
-		cout << "syntax alnayze successful" << endl;
-		return 0;//success
-	}
-
-
+	
 	else
 	{
 		cout << "syntax alnayze failed" << endl;

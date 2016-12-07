@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int outprint_error(int state)
+int token_error(int state)
 {
 	switch (state)
 	{
@@ -17,25 +17,6 @@ int outprint_error(int state)
 }
 
 int syntax_error(int choose_way)
-{
-	switch (choose_way)
-	{
-	case LOOKUP_ERROR0:
-	case LOOKUP_ERROR1:
-	case LOOKUP_ERROR2:
-	case LOOKUP_ERROR3:
-	case LOOKUP_ERROR4:
-	case LOOKUP_ERROR5:
-		cout << "lookup failed" << endl;
-		break;
-	case ANALYZE_ERROR:
-		cout << "syntax alnayze failed" << endl;
-		break;
-	}
-	return ERROR;
-}
-
-int lookup_error(int choose_way)
 {
 	switch (choose_way)
 	{
@@ -56,6 +37,12 @@ int lookup_error(int choose_way)
 		break;
 	case LOOKUP_ERROR5:
 		cout << "LOOKUP_ERROR5" << endl;
+		break;
+	case ANALYZE_ERROR:
+		cout << "ANALYZE_ERROR" << endl;
+		break;
+	case MATCH_ERROR:
+		cout << "MATCH_ERROR" << endl;
 		break;
 	}
 	return ERROR;
