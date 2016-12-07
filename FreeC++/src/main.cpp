@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "parser_.h"
 #include "semantic.h"
+#include "error.h"
 #include <queue>
 
 #pragma warning(disable:4996)
@@ -23,7 +24,7 @@ int main(int argc, char ** argv)
 	}
 	
 	//词法处理机
-	identifier(fin);
+	if (identifier(fin) == ERROR)return 0;
 
 	//Lexer_output(); //token序列输出
 

@@ -3,6 +3,7 @@
 #include <cstring>
 #include <iostream>
 #include <windows.h>
+#include "error.h"
 
 using namespace std;
 
@@ -127,7 +128,12 @@ int identifier(FILE *fin)
 			state = state_change(state, ch);
 			if (state) {
 				if(state>1)token += ch;// 记录字符串;
-			    else cout << ch;
+				else if (state <=-1) //非法输入
+				{
+					outprint_error(state);
+					return ERROR;
+				}
+			    else cout << ch;//输出空格与换行
 			}
 			else
 			{				
@@ -166,7 +172,7 @@ int state_check(int state, int ch_code)
 {
 	switch (state)
 	{
-	 case 1:
+	 case 1: //标识符
 		 if      (ch_code == 0 )state =  1;     //空格
 		 else if (ch_code == 1 )state =  2;     //字母
 		 else if (ch_code == 2 )state =  3;     //数字
@@ -187,20 +193,21 @@ int state_check(int state, int ch_code)
 		 else if (ch_code == 13)state = 27;    //-
 		 else if (ch_code == 11)state = 28;    //*
 		 else if (ch_code == 16)state = 29;    // /
-		 else if (ch_code == 27)state = 30;    //#
-		 else 
-			 state = 0;
+		 else if (ch_code == 27)state = 30;    // #
+		 else if (ch_code == -1)state = -1;    //非法输入
+
+		 else state = 0;
 
 		 break;
-	 case 2:
+	 case 2: //标识符
 		 if (ch_code == 1)state= 2;        //字母
 		 else if (ch_code == 2)state= 2;        //数字
-		 //else if (ch_code == 0)state= 1;
 		 else
 			 state= 0;
 		 break;
-	 case 3:
+	 case 3: //数字
 		 if (ch_code == 2)state= 3;         //数字
+		 else if (ch_code == 1)state = -2;     //error
 		 else if (ch_code == 9)state= 8;         //.
 		 else
 			 state= 0;
@@ -271,6 +278,9 @@ int state_check(int state, int ch_code)
 		 state = 0;
 		 break;
 
+	 default:
+		 state = 0;//error
+		 break;
 
 	}
 	return state;
@@ -375,39 +385,52 @@ int end_state_to_code(int state_before, string token)
 
 int ch_to_num(char ch)
 {
-	if (ch == ' ' || ch == '\t' || ch == '\r'||ch=='\n') return 0; //空格
 	if (is_nondigit(ch))    return 1; //字母或下划线
-	if (is_digit(ch))       return 2; //数字
-	if (ch == '[')          return 3;
-	if (ch == ']')          return 4;
-	if (ch == '(')          return 5;
-	if (ch == ')')          return 6;
-	if (ch == '{')          return 7;
-	if (ch == '}')          return 8;
-	if (ch == '.')          return 9;
-	if (ch == '&')          return 10;
-	if (ch == '*')          return 11;
-	if (ch == '+')          return 12;
-	if (ch == '-')			return 13;
-	if (ch == '~')			return 14;
-	if (ch == '!')			return 15;
-	if (ch == '/')			return 16;
-	if (ch == '%')			return 17;
-	if (ch == '<')			return 18;
-	if (ch == '>')			return 19;
-	if (ch == '^')			return 20;
-	if (ch == '|')          return 21;
-	if (ch == '?')			return 22;
-	if (ch == ':')			return 23;
-	if (ch == ';')			return 24;
-	if (ch == '=')			return 25;
-	if (ch == ',')			return 26;
-	if (ch == '#')			return 27;
+	else if (is_digit(ch))       return 2; //数字
+	else {
+		switch (ch)
+		{
+		case ' ':
+		case '\t':
+		case '\r':
+		case '\n':
+			return 0; //空格
 
-	if (ch == '\'')         return 28;
-	if (ch == '\"')         return 29;
-	
-	else return -1;
+		case '[':return 3;
+		case ']':return 4;
+		case '(':return 5;
+		case ')':return 6;
+		case '{':return 7;
+		case '}':return 8;
+		case '.':return 9;
+		case '&':return 10;
+		case '*':return 11;
+		case '+':return 12;
+		case '-':return 13;
+		case '~':return 14;
+		case '!':return 15;
+		case '/':return 16;
+		case '%':return 17;
+		case '<':return 18;
+		case '>':return 19;
+		case '^':return 20;
+		case '|':return 21;
+		case '?':return 22;
+		case ':':return 23;
+		case ';':return 24;
+		case '=':return 25;
+		case ',':return 26;
+		case '#':return 27;
+
+		case '\'':return 28;
+		case '\"':return 29;
+
+		default:
+			if(ch!=EOF)return -1;//error
+			else return 0;
+			break;
+		}
+	}
 }
 
 //token序列输出

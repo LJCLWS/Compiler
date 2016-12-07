@@ -1,6 +1,7 @@
 #include "lexer.h"
 #include "parser_.h"
 #include "semantic.h"
+#include "error.h"
 #include <vector>
 #include <stack>
 #include <queue>
@@ -80,7 +81,7 @@ int Sem_expression_parser()
 
 	else if (temp_rule >= NT_F&& temp_rule <= NT_E)  //是非终结符
 	{
-		if (choose_way = Sem_LookUp(temp_rule, Sem_temp_terminal))
+		if ((choose_way = Sem_LookUp(temp_rule, Sem_temp_terminal))>0)
 		{
 			//倒序入栈
 			temp_gramer = gramer[choose_way];
@@ -93,8 +94,8 @@ int Sem_expression_parser()
 
 		else
 		{
-			cout << "lookup failed" << endl;
-			return -1;// error;
+			syntax_error(choose_way);
+			return ERROR;// error;
 		}
 	}
 
@@ -128,8 +129,8 @@ int Sem_expression_parser()
 
 	else
 	{
-		cout << "syntax alnayze failed" << endl;
-		return -1;//error
+		syntax_error(ANALYZE_ERROR);
+		return ERROR;//error
 	}
 }
 
@@ -156,8 +157,8 @@ int Sem_LookUp(int stack, int queue)
 		if (queue == T_I || queue == T_LEFT)choose_way = 1;
 		else
 		{
-			cout << "error0" << endl;
-			choose_way = 0;//error
+			choose_way = LOOKUP_ERROR0;//error
+			lookup_error(choose_way);
 		}
 		break;
 	case NT_E1:
@@ -166,16 +167,16 @@ int Sem_LookUp(int stack, int queue)
 		else if (queue == T_RIGHT || queue == BOTH_END)choose_way = 4;
 		else
 		{
-			cout << "error1" << endl;
-			choose_way = 0;//error
+			choose_way = LOOKUP_ERROR1;//error
+			lookup_error(choose_way);
 		}
 		break;
 	case NT_T:
 		if (queue == T_I || queue == T_LEFT)choose_way = 5;
 		else
 		{
-			cout << "error2" << endl;
-			choose_way = 0;//error
+			choose_way = LOOKUP_ERROR2;//error
+			lookup_error(choose_way);
 		}
 		break;
 	case NT_T1:
@@ -184,8 +185,8 @@ int Sem_LookUp(int stack, int queue)
 		else if (queue == T_PLUS || queue == T_MINUS || queue == T_RIGHT || queue == BOTH_END) choose_way = 8;
 		else
 		{
-			cout << "error3" << endl;
-			choose_way = 0;//error
+			choose_way = LOOKUP_ERROR3;//error
+			lookup_error(choose_way);
 		}
 		break;
 	case NT_F:
@@ -193,14 +194,13 @@ int Sem_LookUp(int stack, int queue)
 		else if (queue == T_LEFT)return 10;
 		else
 		{
-			cout << "error4" << endl;
-			choose_way = 0;//error
+			choose_way = LOOKUP_ERROR4;//error
+			lookup_error(choose_way);
 		}
 		break;
 	default:
-		choose_way = 0;//error
-		cout << "error5" << endl;
-
+		choose_way = LOOKUP_ERROR5;//error
+		lookup_error(choose_way);
 		break;
 	}
 
