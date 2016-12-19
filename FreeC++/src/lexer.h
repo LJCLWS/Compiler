@@ -10,14 +10,16 @@ using namespace std;
 #define is_digit(c)   (c >= '0' && c <= '9')
  
 
-int ch_to_num(char ch);
-int identifier(FILE *fin);
-int state_check(int state, int ch_code);
-int  state_change(int state, char ch);
-int search(string token);
-int end_state_to_code(int state_before, string token);
-void Lexer_output(void);
-void color_token(void);
+int identifier(FILE *fin);//词法分析器的主体函数
+int ch_to_num(char ch);//把识别的字符进行数字表示，返回值对应自动机的状态转换的条件
+
+int state_change(int state, int ch_code);//进行状态转换，state为当前状态，ch_code为转换条件
+
+int search(string token);//查关键字表，识别是标识符还是关键字
+int end_state_to_code(int state_before, string token);//由自动机终结状态值得出对应的单词类码
+
+void Lexer_output(void);//词法分析器的结果输出
+void color_token(void);//对关键字高亮颜色显示
 
 //0为标识符类码
 //1为字符常数类码
@@ -138,7 +140,7 @@ enum PT_Table  //Punctuators
 /* 单词存储结构定义 */
 typedef struct TokenTableType
 {
-    int    Hashcode;					// 单词编码
+    int    Class_code;					// 单词编码
     string spelling;					// 单词字符串
 }TokenTableType;
 

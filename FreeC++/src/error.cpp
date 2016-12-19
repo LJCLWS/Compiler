@@ -21,28 +21,31 @@ int syntax_error(int choose_way)
 	switch (choose_way)
 	{
 	case LOOKUP_ERROR0:
-		cout << "LOOKUP_ERROR0" << endl;
+		cout << endl << "LOOKUP_ERROR0" << endl;
 		break;
 	case LOOKUP_ERROR1:
-		cout << "LOOKUP_ERROR1" << endl;
+		cout << endl << "LOOKUP_ERROR1" << endl;
 		break;
 	case LOOKUP_ERROR2:
-		cout << "LOOKUP_ERROR2" << endl;
+		cout << endl << "LOOKUP_ERROR2" << endl;
 		break;
 	case LOOKUP_ERROR3:
-		cout << "LOOKUP_ERROR3" << endl;
+		cout << endl << "LOOKUP_ERROR3" << endl;
 		break;
 	case LOOKUP_ERROR4:
-		cout << "LOOKUP_ERROR4" << endl;
+		cout << endl << "LOOKUP_ERROR4" << endl;
 		break;
 	case LOOKUP_ERROR5:
-		cout << "LOOKUP_ERROR5" << endl;
+		cout << endl << "LOOKUP_ERROR5" << endl;
 		break;
 	case ANALYZE_ERROR:
-		cout << "ANALYZE_ERROR" << endl;
+		cout << endl << "ANALYZE_ERROR" << endl;
 		break;
 	case MATCH_ERROR:
-		cout << "MATCH_ERROR" << endl;
+		cout << endl << "MATCH_ERROR" << endl;
+		break;
+	case WRONG_END:
+		cout << endl << "WRONG_END" << endl;
 		break;
 	}
 	return ERROR;

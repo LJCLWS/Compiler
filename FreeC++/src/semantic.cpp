@@ -131,12 +131,6 @@ int Sem_expression_parser()
 	}
 
 	else if (temp_rule == T_NULL)return Sem_expression_parser();
-
-	else
-	{
-		syntax_error(ANALYZE_ERROR);
-		return ERROR;//error
-	}
 }
 
 //+- token(53,54)    

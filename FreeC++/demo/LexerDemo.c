@@ -1,9 +1,7 @@
 
-
-
 int  main (void)
 {
-   int   a=1, d=88.2,c;
+   int   a=1, d=2.88,c;
    if(a<=d)
     {
        c=a;
@@ -12,8 +10,6 @@ int  main (void)
     }
 char   ch[10]="ok";
 char   x,y='a';
-c=a+d;  
-c=a-d;
-c=a/d;
-c=a*d;
+c=a+d;
+  
 }

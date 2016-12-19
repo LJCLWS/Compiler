@@ -4,9 +4,12 @@
 #include <queue>
 #include <vector>
 #include <iostream>
+#include "error.h"
 
 using namespace std;
 
+
+//LL(1)分析表
 const vector<int> gramer[9]=
 {
 	{0},
@@ -27,6 +30,7 @@ int temp_terminal = 0;
 
 int init_parser()
 {
+#ifdef LL1
 	TempRulesStack.push(BOTH_END);
 	TempRulesStack.push(NT_E);
 
@@ -37,6 +41,14 @@ int init_parser()
 
 	cout << endl << endl;
 	return 0;
+#else 
+//token序号出队列
+temp_token = TokenListQueue.front();
+TokenListQueue.pop();
+temp_terminal = token_to_gramer(temp_token.Ch_class);
+
+return temp_terminal;
+#endif
 }
 
 int expression_parser()
@@ -63,12 +75,12 @@ int expression_parser()
 
 			expression_parser();
 		}
-		else cout << "error";
+		else syntax_error(MATCH_ERROR);
 	}
 	
 	else if (temp_rule <0)  //是非终结符
 	{
-		if (choose_way = LookUp(temp_rule, temp_terminal))
+		if ((choose_way = LookUp(temp_rule, temp_terminal))>0)
 		{
             //倒序入栈
 			temp_gramer = gramer[choose_way];
@@ -81,17 +93,10 @@ int expression_parser()
 		
 		else
 		{
-			cout << "lookup failed" << endl;
-			return -1;// error;
+			return ERROR;// error;
 		}
 	}
 	else if(temp_rule == T_NULL)expression_parser();
-	
-	else
-	{
-		cout << "syntax alnayze failed" << endl;
-		return -1;  //error
-	}
 	
 }
 
@@ -129,8 +134,7 @@ int LookUp(int stack,int queue)
 		if (queue == T_I || queue == T_LEFT)choose_way = 1;
 		else
 		{
-			cout << "error0"<<endl;
-			choose_way = 0;//error
+			choose_way = syntax_error(LOOKUP_ERROR0);//error
 		}
 		break;
 	case NT_E1:
@@ -138,16 +142,14 @@ int LookUp(int stack,int queue)
 		else if (queue == T_RIGHT || queue == BOTH_END)choose_way = 3;
 		else
 		{
-			cout << "error1"<<endl;
-			choose_way = 0;//error
+			choose_way = syntax_error(LOOKUP_ERROR1);//error
 		}
 		break;
 	case NT_T:
 		if (queue == T_I || queue == T_LEFT)choose_way = 4;
 		else
 		{
-			cout << "error2"<<endl;
-			choose_way = 0;//error
+			choose_way = syntax_error(LOOKUP_ERROR2);//error
 		}
 		break;
 	case NT_T1:
@@ -155,8 +157,7 @@ int LookUp(int stack,int queue)
 		else if(queue == T_W0 || queue == T_RIGHT || queue == BOTH_END) choose_way = 6;
 		else
 		{
-			cout << "error3" << endl;
-			choose_way = 0;//error
+			choose_way = syntax_error(LOOKUP_ERROR3);//error
 		}
 		break;
 	case NT_F:
@@ -164,13 +165,11 @@ int LookUp(int stack,int queue)
 		else if (queue == T_LEFT)return 8;
 		else
 		{
-			cout << "error4" << endl;
-			choose_way = 0;//error
+			choose_way = syntax_error(LOOKUP_ERROR4);//error
 		}
 		break;
 	default:
-		choose_way = 0;//error
-        cout << "error5" << endl;
+		choose_way = syntax_error(LOOKUP_ERROR5);//error
 
 		break;
 	}
@@ -180,5 +179,98 @@ int LookUp(int stack,int queue)
 
 
 
+//递归下降子程序法
+//E->T E1
+//E1->ω0T E1 |&
+//T  -> F T1
+//T1 -> ω1F T1 | &
+//F  -> i | ( E )
+int class_code=0;
 
+int recursive_Z()
+{
+	class_code=init_parser();
+	recursive_E();
+	if (class_code == BOTH_END)
+	{
+		cout << endl<<"syntax alnayze successful" << endl;
+		return 0;//结束
+	}
+	else
+	{
+		syntax_error(WRONG_END);
+		return ERROR;
+	}
+		
+}
 
+int recursive_E()
+{
+	recursive_T();
+	recursive_E1();
+	return 0;
+}
+
+int recursive_E1()
+{
+	if (class_code == T_W0)
+	{
+		class_code = init_parser();
+		recursive_T();
+		recursive_E1();
+	}
+	else  //空
+	{
+		return 0;//结束
+	}
+		
+}
+int recursive_T()
+{
+	recursive_F();
+	recursive_T1();
+	return 0;
+}
+int recursive_T1()
+{
+	if (class_code == T_W1)
+	{
+		class_code = init_parser();
+		recursive_F();
+		recursive_T1();
+	}
+	else
+	{ 
+		return 0;//结束
+	}		
+}
+int recursive_F()
+{
+	if (class_code == T_I)
+	{
+		class_code = init_parser();
+		return 0;//结束
+	}
+	else if (class_code == T_LEFT)
+	{
+		class_code = init_parser();
+		recursive_E();
+		if (class_code == T_RIGHT)
+		{
+			class_code = init_parser();
+			return class_code;//结束
+		}
+		else
+		{
+			syntax_error(MATCH_ERROR);
+			class_code = -1;
+			return ERROR;
+		}
+		    
+	}
+	else
+	{
+		syntax_error(WRONG_END);
+		return ERROR;
+	}
+}

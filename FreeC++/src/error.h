@@ -16,6 +16,8 @@
 
 #define MATCH_ERROR     -7
 
+#define WRONG_END       -8
+
 
 
 

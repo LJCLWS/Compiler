@@ -4,6 +4,7 @@
 #include <iostream>
 #include <windows.h>
 #include "error.h"
+#include <iomanip>
 
 using namespace std;
 
@@ -125,7 +126,7 @@ int identifier(FILE *fin)
 		{   
 			getch();
 			state_before = state;
-			state = state_change(state, ch);
+			state = state_change(state, ch_to_num(ch));
 			if (state) {
 				if(state>1)token += ch;// 记录字符串;
 				else if (state <=0) //非法输入
@@ -151,24 +152,12 @@ int identifier(FILE *fin)
 				//parse(code);
 			}
 		}
+
 		return 0;
 }
 
-int  state_change(int state, char ch)
-{
-	    int end_state = 0;
-	    static int ch_code = 0;
-	    end_state = 0;
-		ch_code = ch_to_num(ch);
 
-		if (state >= 1 && state <= state_before)
-		{
-			end_state = state_check(state, ch_code);
-		}
-		return  end_state;
-}
-
-int state_check(int state, int ch_code)
+int state_change(int state, int ch_code)
 {
 	switch (state)
 	{
@@ -375,7 +364,7 @@ int end_state_to_code(int state_before, string token)
 		code = TK_HASH;
 		break;
 	default:
-		code = -1;//error;
+		code = ERROR;//error;
 		break;
 
 	}
@@ -426,7 +415,7 @@ int ch_to_num(char ch)
 		case '\"':return 29;
 
 		default:
-			if(ch!=EOF)return -1;//error
+			if(ch!=EOF)return ERROR;//error
 			else return 0;
 			break;
 		}
@@ -439,9 +428,11 @@ void Lexer_output(void)
 	cout << endl<< "token list:" << endl;
 	while (TokenListQueue.size())
 	{
+		static int i = 1;
 		TokenListType t = TokenListQueue.front();
 		TokenListQueue.pop();
-		cout << "<" << t.Ch_class << "," << t.Ch_code << ">" << "	";// << "," << t.spelling.c_str() << ">" << endl;
+		cout <<setw(4) << "<"<< t.Ch_class<< "," << t.spelling.c_str() << ">"<<"	" << right;
+		if (i++ % 5 == 0)cout << endl;
 	} 
 	cout << endl;
 }
@@ -451,7 +442,6 @@ void Lexer_output(void)
 void color_token(void)
 {
 	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-	char *p;
 	    if (TempToken.Ch_class == 0)     //标识符
 			SetConsoleTextAttribute(h, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
 		else if (TempToken.Ch_class == 1)  //字符常量
@@ -465,7 +455,7 @@ void color_token(void)
 		else if (TempToken.Ch_class <= TK_HASH2 && TempToken.Ch_class >= TK_OPENBR)//界符
 			SetConsoleTextAttribute(h, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
 		else
-			SetConsoleTextAttribute(h, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+			SetConsoleTextAttribute(h, FOREGROUND_RED| FOREGROUND_INTENSITY);
 
 		cout << TempToken.spelling.c_str();
 }

@@ -21,8 +21,13 @@ typedef struct FourQtType
 	string ttt;
 }FourQtType;
 
+//语法分析器的初始化，包括结尾标识符入栈和起始标志入栈
 int Sem_init_parser();
+//语法分析器主体部分
 int Sem_expression_parser();
+//把token序列的元素对应到文法表示的终结符
 int Sem_token_to_gramer(int token);
+//根据给的非终结符与终结符到LL(1)分析表中查找路径
 int Sem_LookUp(int stack, int queue);
+//四元式的输出
 void Sem_outprint();
