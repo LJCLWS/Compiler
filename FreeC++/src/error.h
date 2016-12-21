@@ -19,7 +19,16 @@
 #define WRONG_END       -8
 
 
+class ExceptionClass
+{
+public:
+	ExceptionClass() {};
+	~ExceptionClass() {};
+	int token_error(int state);
+	int syntax_error(int error_type);
+
+private:
 
 
-int token_error(int state);
-int syntax_error(int error_type);
+};
+

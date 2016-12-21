@@ -1,6 +1,12 @@
 #pragma once
 
-//#define LL1
+#include <stack>
+#include <queue>
+#include "error.h"
+
+using namespace std;
+
+#define LL1
 
 #define NT_E   -1
 #define NT_E1  -2
@@ -17,20 +23,49 @@
 
 #define BOTH_END   TK_SEMICOLON //TK_HASH
 
-//语法分析器的初始化，包括结尾标识符入栈和起始标志入栈
-int init_parser();
-//语法分析器主体部分
-int expression_parser();
-//把token序列的元素对应到文法表示的终结符
-int token_to_gramer(int token);
-//根据给的非终结符与终结符到LL(1)分析表中查找路径
-int LookUp(int stack, int queue);
 
-//递归下降主程序
-int recursive_Z();
-//递归下降子程序
-int recursive_E();
-int recursive_E1();
-int recursive_T();
-int recursive_T1();
-int recursive_F();
+class parser:public lexer 
+{
+public:
+	parser(char *fin):lexer(fin){};
+	~parser() {};
+	//LL1
+	//语法分析器的初始化，包括结尾标识符入栈和起始标志入栈
+	virtual int init_parser();
+	//语法分析器主体部分
+	virtual int expression_parser();
+	//把token序列的元素对应到文法表示的终结符
+	virtual int token_to_gramer(int token);
+	//根据给的非终结符与终结符到LL(1)分析表中查找路径
+	virtual int LookUp(int stack, int queue);
+
+	//递归下降主程序
+	int recursive_Z();
+	//递归下降子程序
+	int recursive_E();
+	int recursive_E1();
+	int recursive_T();
+	int recursive_T1();
+	int recursive_F();
+
+private:
+	stack<int> TempRulesStack;
+	TokenListType temp_token;
+	int temp_terminal = 0;
+	ExceptionClass error;
+
+	const vector<int> gramer[9] =
+	{
+		{ 0 },
+		{ NT_T,NT_E1 },
+		{ T_W0,NT_T,NT_E1 },
+		{ T_NULL },
+		{ NT_F,NT_T1 },
+		{ T_W1,NT_F,NT_T1 },
+		{ T_NULL },
+		{ T_I },
+		{ T_LEFT,NT_E,T_RIGHT }
+	};
+
+};
+

@@ -3,49 +3,51 @@
 
 using namespace std;
 
-int token_error(int state)
+
+
+int ExceptionClass::token_error(int state)
 {
 	switch (state)
 	{
 	case IN_ERROR:
-		cout << "非法输入" << endl;
-		return ERROR;
+		throw string("非法输入");
+		break;
 	case IDENTICAL_ERROR:
-		cout << "非法标识符" << endl;
-		return ERROR;
+		throw string("IDENTICAL_ERROR");
+		break;
 	}
 }
 
-int syntax_error(int choose_way)
+int ExceptionClass::syntax_error(int choose_way)
 {
 	switch (choose_way)
 	{
 	case LOOKUP_ERROR0:
-		cout << endl << "LOOKUP_ERROR0" << endl;
+		throw string("LOOKUP_ERROR0");
 		break;
 	case LOOKUP_ERROR1:
-		cout << endl << "LOOKUP_ERROR1" << endl;
+		throw string("LOOKUP_ERROR1");
 		break;
 	case LOOKUP_ERROR2:
-		cout << endl << "LOOKUP_ERROR2" << endl;
+		throw string("LOOKUP_ERROR2");
 		break;
 	case LOOKUP_ERROR3:
-		cout << endl << "LOOKUP_ERROR3" << endl;
+		throw string("LOOKUP_ERROR3");
 		break;
 	case LOOKUP_ERROR4:
-		cout << endl << "LOOKUP_ERROR4" << endl;
+		throw string("LOOKUP_ERROR4");
 		break;
 	case LOOKUP_ERROR5:
-		cout << endl << "LOOKUP_ERROR5" << endl;
+		throw string("LOOKUP_ERROR5");
 		break;
 	case ANALYZE_ERROR:
-		cout << endl << "ANALYZE_ERROR" << endl;
+		throw string("ANALYZE_ERROR");
 		break;
 	case MATCH_ERROR:
-		cout << endl << "MATCH_ERROR" << endl;
+		throw string("MATCH_ERROR");
 		break;
 	case WRONG_END:
-		cout << endl << "WRONG_END" << endl;
+		throw string("WRONG_END");
 		break;
 	}
 	return ERROR;

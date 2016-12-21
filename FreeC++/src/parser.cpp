@@ -8,27 +8,9 @@
 
 using namespace std;
 
-
 //LL(1)分析表
-const vector<int> gramer[9]=
-{
-	{0},
-	{NT_T,NT_E1},
-	{T_W0,NT_T,NT_E1},
-	{T_NULL},
-	{NT_F,NT_T1},
-	{T_W1,NT_F,NT_T1},
-	{T_NULL},
-	{T_I},
-	{T_LEFT,NT_E,T_RIGHT}
-};
 
-extern queue<TokenListType> TokenListQueue;
-stack<int> TempRulesStack;
-TokenListType temp_token;
-int temp_terminal = 0;
-
-int init_parser()
+int parser:: init_parser()
 {
 #ifdef LL1
 	TempRulesStack.push(BOTH_END);
@@ -51,7 +33,7 @@ return temp_terminal;
 #endif
 }
 
-int expression_parser()
+int parser::expression_parser()
 {
 	int temp_rule = 0;
 	int choose_way = 0;
@@ -75,7 +57,7 @@ int expression_parser()
 
 			expression_parser();
 		}
-		else syntax_error(MATCH_ERROR);
+		else error.syntax_error(MATCH_ERROR);
 	}
 	
 	else if (temp_rule <0)  //是非终结符
@@ -106,7 +88,7 @@ int expression_parser()
 //变量、常数  token(0,3) i
 // (  token(43)
 // ） token(44)
-int token_to_gramer(int token)
+int parser::token_to_gramer(int token)
 {
 	int code=0;
 	if (token == 53 || token == 54)code=T_W0;
@@ -125,7 +107,7 @@ int token_to_gramer(int token)
 
 
 
-int LookUp(int stack,int queue)
+int parser::LookUp(int stack,int queue)
 {
 	int choose_way;
 	switch (stack)
@@ -134,7 +116,7 @@ int LookUp(int stack,int queue)
 		if (queue == T_I || queue == T_LEFT)choose_way = 1;
 		else
 		{
-			choose_way = syntax_error(LOOKUP_ERROR0);//error
+			choose_way = error.syntax_error(LOOKUP_ERROR0);//error
 		}
 		break;
 	case NT_E1:
@@ -142,14 +124,14 @@ int LookUp(int stack,int queue)
 		else if (queue == T_RIGHT || queue == BOTH_END)choose_way = 3;
 		else
 		{
-			choose_way = syntax_error(LOOKUP_ERROR1);//error
+			choose_way = error.syntax_error(LOOKUP_ERROR1);//error
 		}
 		break;
 	case NT_T:
 		if (queue == T_I || queue == T_LEFT)choose_way = 4;
 		else
 		{
-			choose_way = syntax_error(LOOKUP_ERROR2);//error
+			choose_way = error.syntax_error(LOOKUP_ERROR2);//error
 		}
 		break;
 	case NT_T1:
@@ -157,7 +139,7 @@ int LookUp(int stack,int queue)
 		else if(queue == T_W0 || queue == T_RIGHT || queue == BOTH_END) choose_way = 6;
 		else
 		{
-			choose_way = syntax_error(LOOKUP_ERROR3);//error
+			choose_way = error.syntax_error(LOOKUP_ERROR3);//error
 		}
 		break;
 	case NT_F:
@@ -165,11 +147,11 @@ int LookUp(int stack,int queue)
 		else if (queue == T_LEFT)return 8;
 		else
 		{
-			choose_way = syntax_error(LOOKUP_ERROR4);//error
+			choose_way = error.syntax_error(LOOKUP_ERROR4);//error
 		}
 		break;
 	default:
-		choose_way = syntax_error(LOOKUP_ERROR5);//error
+		choose_way = error.syntax_error(LOOKUP_ERROR5);//error
 
 		break;
 	}
@@ -187,7 +169,7 @@ int LookUp(int stack,int queue)
 //F  -> i | ( E )
 int class_code=0;
 
-int recursive_Z()
+int parser::recursive_Z()
 {
 	class_code=init_parser();
 	recursive_E();
@@ -198,20 +180,20 @@ int recursive_Z()
 	}
 	else
 	{
-		syntax_error(WRONG_END);
+		error.syntax_error(WRONG_END);
 		return ERROR;
 	}
 		
 }
 
-int recursive_E()
+int parser::recursive_E()
 {
 	recursive_T();
 	recursive_E1();
 	return 0;
 }
 
-int recursive_E1()
+int parser::recursive_E1()
 {
 	if (class_code == T_W0)
 	{
@@ -225,13 +207,13 @@ int recursive_E1()
 	}
 		
 }
-int recursive_T()
+int parser::recursive_T()
 {
 	recursive_F();
 	recursive_T1();
 	return 0;
 }
-int recursive_T1()
+int parser::recursive_T1()
 {
 	if (class_code == T_W1)
 	{
@@ -244,7 +226,7 @@ int recursive_T1()
 		return 0;//结束
 	}		
 }
-int recursive_F()
+int parser::recursive_F()
 {
 	if (class_code == T_I)
 	{
@@ -262,7 +244,7 @@ int recursive_F()
 		}
 		else
 		{
-			syntax_error(MATCH_ERROR);
+			error.syntax_error(MATCH_ERROR);
 			class_code = -1;
 			return ERROR;
 		}
@@ -270,7 +252,7 @@ int recursive_F()
 	}
 	else
 	{
-		syntax_error(WRONG_END);
+		error.syntax_error(WRONG_END);
 		return ERROR;
 	}
 }

@@ -11,36 +11,40 @@
 
 using namespace std;
 
-
-//#define LEXER_OUTPRINT
-#define PARSER_ANALYZE
-
-FILE *fin = NULL;
+#define LEXER_OUTPRINT
+//#define PARSER_ANALYZE
 
 int main(int argc, char ** argv)
-{
-    //源文件输入
-	fin = fopen(argv[1],"rb");
-	if(!fin)
-	{
-		printf("Can't find source file!\n");
-		return 0;
-	}
-	
+{	
 	//词法处理机
-	if (identifier(fin) == ERROR)return 0;
+	SemParser semparser= SemParser(argv[1]);
+
+	if (semparser.identifier() == ERROR)return 0;
 #ifdef  LEXER_OUTPRINT
-	Lexer_output();//token序列输出
+	semparser.Lexer_output();//token序列输出
 #endif
 
 	//语法分析器
 #ifndef LEXER_OUTPRINT
 #ifdef  PARSER_ANALYZE
 #ifdef  LL1
-	init_parser();
-	expression_parser();
+	try {
+		semparser.init_parser();
+		semparser.expression_parser();
+	}
+	catch (string str)
+	{
+		cout << str.c_str() << endl;
+	}
 #else
-	recursive_Z();
+	try{ 
+		semparser.recursive_Z();
+	}
+	catch (string str)
+	{
+		cout << str.c_str() << endl;
+	}
+	
 #endif
 #endif
 #endif
@@ -48,13 +52,17 @@ int main(int argc, char ** argv)
 	//中间代码生成
 #ifndef LEXER_OUTPRINT
 #ifndef PARSER_ANALYZE
-	Sem_init_parser();
-	if (!Sem_expression_parser())
-		Sem_outprint();
+	try {
+		semparser.init_parser();
+		if (!semparser.expression_parser())
+			semparser.Sem_outprint();
+	}
+	catch (string str)
+	{
+		cout << str.c_str() << endl;
+	}
 #endif
 #endif // !LEXER_OUTPRINT
-
-	
 
 	return 0;
 }
