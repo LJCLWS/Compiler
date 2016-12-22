@@ -8,251 +8,283 @@
 
 using namespace std;
 
-//LL(1)分析表
-
-int parser:: init_parser()
+int parser:: pop_terminal()
 {
-#ifdef LL1
-	TempRulesStack.push(BOTH_END);
-	TempRulesStack.push(NT_E);
-
-	//token序号出队列
-	temp_token = TokenListQueue.front();
-	TokenListQueue.pop();
-	temp_terminal = token_to_gramer(temp_token.Ch_class);
-
-	cout << endl << endl;
-	return 0;
-#else 
 //token序号出队列
-temp_token = TokenListQueue.front();
+temp_terminal = TokenListQueue.front();
 TokenListQueue.pop();
-temp_terminal = token_to_gramer(temp_token.Ch_class);
 
-return temp_terminal;
-#endif
+return temp_terminal.token_code;
 }
-
-int parser::expression_parser()
-{
-	int temp_rule = 0;
-	int choose_way = 0;
-	vector<int> temp_gramer;
-		
-	//语法分析栈出栈
-	temp_rule = TempRulesStack.top();
-	TempRulesStack.pop();
-
-	if (temp_rule >0) {  //是终结符
-		if (temp_rule == temp_terminal) {
-			if (temp_rule == BOTH_END)
-			{
-				cout << "syntax alnayze successful" << endl;
-				return 0;//success
-			}
-			//token序号出队列
-			temp_token = TokenListQueue.front();
-			TokenListQueue.pop();
-			temp_terminal = token_to_gramer(temp_token.Ch_class);
-
-			expression_parser();
-		}
-		else error.syntax_error(MATCH_ERROR);
-	}
-	
-	else if (temp_rule <0)  //是非终结符
-	{
-		if ((choose_way = LookUp(temp_rule, temp_terminal))>0)
-		{
-            //倒序入栈
-			temp_gramer = gramer[choose_way];
-			while (temp_gramer.size()) {
-				TempRulesStack.push(temp_gramer.back());
-				temp_gramer.pop_back();
-			}
-			expression_parser();
-		}
-		
-		else
-		{
-			return ERROR;// error;
-		}
-	}
-	else if(temp_rule == T_NULL)expression_parser();
-	
-}
-
-
-//+- token(53,54)  w0  
-//*/ token(52,57)  w1
-//变量、常数  token(0,3) i
-// (  token(43)
-// ） token(44)
-int parser::token_to_gramer(int token)
-{
-	int code=0;
-	if (token == 53 || token == 54)code=T_W0;
-	if (token == 52 || token == 57)code=T_W1;
-	if (token == 0 || token == 3) code =T_I;
-	if (token == 43)code = T_LEFT;
-	if (token == 44)code = T_RIGHT;
-	//if (token == TK_HASH)code = TK_HASH;
-	if (token == TK_SEMICOLON)code = TK_SEMICOLON;
-	
-
-	return code;
-}
-
-
-
-
-
-int parser::LookUp(int stack,int queue)
-{
-	int choose_way;
-	switch (stack)
-	{
-	case NT_E:
-		if (queue == T_I || queue == T_LEFT)choose_way = 1;
-		else
-		{
-			choose_way = error.syntax_error(LOOKUP_ERROR0);//error
-		}
-		break;
-	case NT_E1:
-		if (queue == T_W0 )choose_way = 2;
-		else if (queue == T_RIGHT || queue == BOTH_END)choose_way = 3;
-		else
-		{
-			choose_way = error.syntax_error(LOOKUP_ERROR1);//error
-		}
-		break;
-	case NT_T:
-		if (queue == T_I || queue == T_LEFT)choose_way = 4;
-		else
-		{
-			choose_way = error.syntax_error(LOOKUP_ERROR2);//error
-		}
-		break;
-	case NT_T1:
-		if (queue == T_W1)choose_way = 5;
-		else if(queue == T_W0 || queue == T_RIGHT || queue == BOTH_END) choose_way = 6;
-		else
-		{
-			choose_way = error.syntax_error(LOOKUP_ERROR3);//error
-		}
-		break;
-	case NT_F:
-		if (queue == T_I)return 7;
-		else if (queue == T_LEFT)return 8;
-		else
-		{
-			choose_way = error.syntax_error(LOOKUP_ERROR4);//error
-		}
-		break;
-	default:
-		choose_way = error.syntax_error(LOOKUP_ERROR5);//error
-
-		break;
-	}
-	
-	return choose_way;
-}
-
-
 
 //递归下降子程序法
-//E->T E1
-//E1->ω0T E1 |&
-//T  -> F T1
-//T1 -> ω1F T1 | &
-//F  -> i | ( E )
-int class_code=0;
 
-int parser::recursive_Z()
+//递归下降主程序
+int parser::translation_unit() 
 {
-	class_code=init_parser();
-	recursive_E();
-	if (class_code == BOTH_END)
+	pop_terminal();
+	external_declaration();
+
+	if (temp_terminal.token_code == BOTH_END)
 	{
-		cout << endl<<"syntax alnayze successful" << endl;
+		cout << endl << "syntax alnayze successful" << endl;
 		return 0;//结束
 	}
 	else
 	{
-		error.syntax_error(WRONG_END);
-		return ERROR;
+		external_declaration();
+		/*error.syntax_error(WRONG_END);
+		return ERROR;*/
 	}
-		
 }
 
-int parser::recursive_E()
+int parser::external_declaration()
 {
-	recursive_T();
-	recursive_E1();
+	function_definition();
 	return 0;
 }
 
-int parser::recursive_E1()
+int parser::function_definition()
 {
-	if (class_code == T_W0)
-	{
-		class_code = init_parser();
-		recursive_T();
-		recursive_E1();
-	}
-	else  //空
-	{
-		return 0;//结束
-	}
-		
-}
-int parser::recursive_T()
-{
-	recursive_F();
-	recursive_T1();
+	declaration_specifiers();
+	declarator();
+	compound_statement();
 	return 0;
 }
-int parser::recursive_T1()
+
+int parser::declaration_specifiers()
 {
-	if (class_code == T_W1)
-	{
-		class_code = init_parser();
-		recursive_F();
-		recursive_T1();
-	}
-	else
-	{ 
-		return 0;//结束
-	}		
+	if(temp_terminal.sytax_code == type_specifier)pop_terminal();
+	else throw START_ERROR; //error
+	return 0;
 }
-int parser::recursive_F()
+
+int parser::declarator()
 {
-	if (class_code == T_I)
+	direct_declarator();
+	return 0;
+}
+
+int parser::direct_declarator()
+{
+	if (temp_terminal.token_code == 0)
 	{
-		class_code = init_parser();
-		return 0;//结束
+		pop_terminal();
+		if (temp_terminal.token_code == TK_OPENPA)
+		{
+			pop_terminal();
+			parameter_type_list();
+		}
+		else throw PARSER_ERROR2;
+		if (temp_terminal.token_code == TK_CLOSEPA)
+		{
+			pop_terminal();
+		}
+		else throw PARSER_ERROR4;
 	}
-	else if (class_code == T_LEFT)
+	else throw PARSER_ERROR1;
+	return 0;
+}
+
+int parser::parameter_type_list()
+{
+	parameter_list();
+	if (temp_terminal.token_code == TK_COMMA)
 	{
-		class_code = init_parser();
-		recursive_E();
-		if (class_code == T_RIGHT)
+		pop_terminal();
+		if (temp_terminal.token_code == TK_ELLIPSIS)
 		{
-			class_code = init_parser();
-			return class_code;//结束
+			pop_terminal();
 		}
-		else
+		else throw PARSER_ERROR3;
+
+	}
+	return 0;
+}
+
+int parser::parameter_list()
+{
+	parameter_declaration();
+	if (temp_terminal.sytax_code == type_specifier) 
+	{
+		pop_terminal();
+		parameter_declaration();
+	}
+	return 0;
+}
+
+int parser::parameter_declaration()
+{
+	declaration_specifiers();
+	declarator();
+	return 0;
+}
+int parser::compound_statement()
+{
+	if (temp_terminal.token_code == TK_BEGIN)
+	{
+		pop_terminal();
+		if (temp_terminal.token_code == TK_END)
 		{
-			error.syntax_error(MATCH_ERROR);
-			class_code = -1;
-			return ERROR;
+			pop_terminal();
+			return 0;
 		}
-		    
+		else block_item_list();
+		if (temp_terminal.token_code == TK_END)
+		{
+			pop_terminal();
+			return 0;
+		}
+		else throw TK_END_MATCH_ERROR;
+	}
+	return 0;
+}
+
+int parser::block_item_list()
+{
+	block_item();
+	
+	//还没完
+	return 0;
+}
+
+int parser::block_item()
+{
+	if (temp_terminal.sytax_code == type_specifier)
+	{
+		//pop_terminal();
+		declaration();
 	}
 	else
 	{
-		error.syntax_error(WRONG_END);
-		return ERROR;
+		statement();
 	}
+	return 0;
+}
+
+int parser::declaration()
+{
+	declaration_specifiers();
+	init_declarator_list();
+	return 0;
+}
+
+int parser::init_declarator_list()
+{
+	init_declarator(); 
+	//没完
+	return 0;
+}
+
+int parser::init_declarator()
+{
+	declarator();
+	if (temp_terminal.token_code == TK_ASSIGN)
+	{
+		pop_terminal();
+		initializer();
+		return 0;
+	}
+	return 0;
+}
+
+int parser::initializer()
+{
+	assignment_expression();
+	return 0;
+}
+int parser::statement()
+{
+	if (temp_terminal.token_code == KW_case|| temp_terminal.token_code == KW_default)
+	{
+		//pop_terminal();
+		labeled_statement();
+	}
+	else if (temp_terminal.token_code == TK_BEGIN)
+	{
+		//pop_terminal();
+		compound_statement();
+	}
+	else if (temp_terminal.token_code == KW_if || temp_terminal.token_code == KW_switch)
+	{
+		//pop_terminal();
+		selection_statement();
+	}
+	else if (temp_terminal.token_code == KW_while || temp_terminal.token_code == KW_do)
+	{
+		//pop_terminal();
+		iteration_statement();
+	}
+	else if (temp_terminal.token_code == KW_continue || temp_terminal.token_code == KW_break || temp_terminal.token_code == KW_return)
+	{
+		//pop_terminal();
+		jump_statement();
+	}
+	else
+	{
+		expression();
+	}
+	return 0;
+}
+
+
+int parser::labeled_statement()
+{
+
+	return 0;
+}
+
+int parser::selection_statement()
+{
+	return 0;
+}
+
+int parser::iteration_statement()
+{
+	return 0;
+
+}
+
+int parser::jump_statement()
+{
+	return 0;
+}
+
+//递归下降子程序
+int parser::expression()
+{
+	assignment_expression();
+	
+	return 0;
+}
+int parser::assignment_expression()
+{
+	conditional_expression();
+
+	return 0;
+}
+int parser::conditional_expression()
+{
+
+	return 0;
+}
+int parser::logical_OR_expression()
+{
+
+	return 0;
+}
+int parser::logical_AND_expression()
+{
+
+	return 0;
+}
+int parser::inclusive_OR_expression()
+{
+
+	return 0;
+}
+int parser::exclusive_OR_expression()
+{
+
+	return 0;
 }

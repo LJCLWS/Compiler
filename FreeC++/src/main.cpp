@@ -3,7 +3,7 @@
 #include<iterator>
 #include "lexer.h"
 #include "parser_.h"
-#include "semantic.h"
+//#include "semantic.h"
 #include "error.h"
 #include <queue>
 
@@ -17,9 +17,9 @@ using namespace std;
 int main(int argc, char ** argv)
 {	
 	//词法处理机
-	SemParser semparser= SemParser(argv[1]);
+	parser semparser= parser(argv[1]);
 
-	if (semparser.identifier() == ERROR)return 0;
+	if (semparser.identifier() == EXCEPTION)return 0;
 #ifdef  LEXER_OUTPRINT
 	semparser.Lexer_output();//token序列输出
 #endif

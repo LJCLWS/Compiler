@@ -20,50 +20,55 @@ using namespace std;
 /* 关键字类码表 */
 enum KW_Table //KeyWords
 {
-    KW_auto=4,
-    KW_break,
-    KW_case,
-    KW_char,
+	KW_void=4,
+	KW_char,
+	KW_short,
+	KW_int,
+	KW_long,
+	KW_float,
+	KW_double,
+	KW_signed,
+	KW_unsigned,
+	KW__Bool,
+	KW__Complex,
+	KW__Imaginary,
+
+	KW_struct,
+	KW_union,
+	KW_enum,
+
+	KW_typedef,
+	KW_extern,
+	KW_static,
+	KW_auto,
+	KW_register,
+
+	KW_volatile,
     KW_const,
-    KW_continue,
-    KW_default,
-    KW_do,
-    KW_double,
-    KW_else,
-    KW_enum,
-    KW_extern,
-    KW_float,
-    KW_for,
-    KW_goto,
-    KW_if,
-    KW_inline,
-    KW_int,
-    KW_long,
-    KW_register,
-    KW_restrict,
-    KW_return,
-    KW_short,
-    KW_signed,
+    KW_inline, 
+    KW_return,    
     KW_sizeof,
-    KW_static,
-    KW_struct,
-    KW_switch,
-    KW_typedef,
-    KW_union,
-    KW_unsigned,
-    KW_void,
-    KW_volatile,
-    KW_while,
-    KW__Bool,
-    KW__Complex,
-    KW__Imaginary,
+	
+	KW_restrict,
+
+	KW_if,
+	KW_else,
+	KW_goto,
+	KW_for,
+	KW_do,
+	KW_while,
+	KW_continue,
+    KW_switch,           
+	KW_case,
+	KW_break,
+	KW_default,
 };
 
 /* 界符类码表 */
 enum PT_Table  //Punctuators
 {
 	TK_OPENBR=41,	// [ 左中括号
-	TK_CLOSEBR,		// ] 右圆括号
+	TK_CLOSEBR,		// ] 右中括号
 	TK_OPENPA,		// ( 左圆括号
 	TK_CLOSEPA,		// ) 右圆括号
 	TK_BEGIN,		// { 左大括号
@@ -131,15 +136,15 @@ enum PT_Table  //Punctuators
 /* 单词存储结构定义 */
 typedef struct TokenTableType
 {
-    int    Class_code;					// 单词编码
+    int    token_code;					// 单词编码
     string spelling;					// 单词字符串
 }TokenTableType;
 
 
 typedef struct TokenListType
 {
-	int Ch_class;   //分类码
-	int Ch_code;    //语义码
+	int token_code;   //分类码
+	int sytax_code;    //语义码
 	string spelling;
 	//struct TokenListType *next;
 
@@ -169,7 +174,7 @@ public:
 	int identifier(void);//词法分析器的主体函数
 	int ch_to_num(char ch);//把识别的字符进行数字表示，返回值对应自动机的状态转换的条件
 
-	int state_change(int ch_code);//进行状态转换，state为当前状态，ch_code为转换条件
+	int state_change(int sytax_code);//进行状态转换，state为当前状态，sytax_code为转换条件
 
 	int search(string token);//查关键字表，识别是标识符还是关键字
 	int end_state_to_code(int state_before, string token);//由自动机终结状态值得出对应的单词类码
@@ -187,43 +192,45 @@ protected:
 		{ 1,"0" },  //字符常量
 		{ 2,"0" },  //字符串常量
 		{ 3,"0" },  //数字常量
-		{ KW_auto,"auto" },
-		{ KW_break,"break" },
-		{ KW_case,"case" },
-		{ KW_char,"char" },
-		{ KW_const,"const" },
-		{ KW_continue,"continue" },
-		{ KW_default,"default" },
-		{ KW_do,"do" },
-		{ KW_double,"double" },
-		{ KW_else,"else" },
-		{ KW_enum,"enum" },
-		{ KW_extern,"extern" },
-		{ KW_float,"float" },
-		{ KW_for,"for" },
-		{ KW_goto,"goto" },
-		{ KW_if,"if" },
-		{ KW_inline,"inline" },
-		{ KW_int,"int" },
-		{ KW_long,"long" },
-		{ KW_register,"register" },
-		{ KW_restrict,"restrict" },
-		{ KW_return,"return" },
-		{ KW_short,"short" },
-		{ KW_signed,"signed" },
-		{ KW_sizeof,"sizeof" },
-		{ KW_static,"static" },
-		{ KW_struct,"struct" },
-		{ KW_switch,"switch" },
-		{ KW_typedef,"typedef" },
-		{ KW_union,"union" },
-		{ KW_unsigned,"unsigned" },
 		{ KW_void,"void" },
-		{ KW_volatile,"volatile" },
-		{ KW_while,"while" },
+		{ KW_char,"char" },
+		{ KW_short,"short" },
+		{ KW_int,"int"},
+		{ KW_long,"long" },
+		{ KW_float,"float" },
+		{ KW_double,"double" },
+		{ KW_signed,"signed" },
+		{ KW_unsigned,"usigned" },
 		{ KW__Bool,"_Bool" },
 		{ KW__Complex,"_Complex" },
 		{ KW__Imaginary,"_Imaginary" },
+
+		{ KW_struct,"struct" },
+		{ KW_union,"union" },
+		{ KW_enum,"enum" },
+		{ KW_typedef,"typedef" },
+		{ KW_volatile,"volatile" },
+
+		{ KW_auto,"auto" },
+		{ KW_const,"const" },
+		{ KW_static,"static" },
+		{ KW_extern,"extern" },
+		{ KW_inline,"inline" },
+		{ KW_return,"return" },
+		{ KW_sizeof,"sizeof" },
+		{ KW_register,"register" },
+		{ KW_restrict,"restrict" },
+		{ KW_if,"if" },
+		{ KW_else,"else" },
+		{ KW_goto,"goto" },
+		{ KW_for,"for" },
+		{ KW_do,"do" },
+		{ KW_while,"while" },
+		{ KW_continue,"continue" },
+		{ KW_switch,"switch" },
+		{ KW_case,"case" },
+		{ KW_break,"break" },
+		{ KW_default,"default"},
 
 		{ TK_OPENBR,"[" },		// [ 左中括号
 		{ TK_CLOSEBR,"]" },		// ] 右圆括号

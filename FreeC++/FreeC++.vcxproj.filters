@@ -24,9 +24,6 @@
     <ClCompile Include="src\parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\semantic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\error.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -38,11 +35,18 @@
     <ClInclude Include="src\parser_.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\semantic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\error.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\express_simple.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

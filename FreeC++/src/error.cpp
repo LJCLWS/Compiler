@@ -4,7 +4,6 @@
 using namespace std;
 
 
-
 int ExceptionClass::token_error(int state)
 {
 	switch (state)
@@ -50,5 +49,5 @@ int ExceptionClass::syntax_error(int choose_way)
 		throw string("WRONG_END");
 		break;
 	}
-	return ERROR;
+	return EXCEPTION;
 }

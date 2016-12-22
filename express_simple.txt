@@ -1,0 +1,165 @@
+# Compiler FreeC
+FreeC++ IDE 的开发。
+目标：做成一个自由开源的C/C++集成开发工具。最重要的是要轻便，调试功能要强大（最好要有CodeBlocks的轻便，VS的强大的调试工具）。
+
+A.2.4 External definitions
+(6.9) translation-unit:
+		external-declaration{external-declaration}
+
+(6.9) external-declaration:
+		function-definition
+
+(6.9.1) function-definition:
+		declaration-specifiers declarator compound-statement
+
+(6.8.2) block-item-list:
+		block-item{block-item}
+		
+(6.8.2) block-item:
+		declaration
+		statement
+
+A.2.2 Declarations
+(6.7) declaration:
+		declaration-specifiers init-declarator-list;
+
+(6.7) declaration-specifiers:	
+		type-specifier
+
+(6.7.5) declarator:
+		direct-declarator
+
+(6.7.5) direct-declarator:
+		identifier{( parameter-type-list )}
+
+(6.7.5) parameter-type-list:
+		parameter-list
+		parameter-list , ...
+
+(6.7.5) parameter-list:
+		parameter-declaration{parameter-declaration}
+
+(6.7.5) parameter-declaration:
+		declaration-specifiers declarator
+
+(6.7) init-declarator-list:
+		init-declarator{init-declarator}
+
+(6.7) init-declarator:
+		declarator
+		declarator = initializer
+
+(6.7.8) initializer:
+		assignment-expression
+
+A.2.3 Statements
+(6.8) statement:
+		labeled-statement
+		compound-statement
+		expression-statement
+		selection-statement
+		iteration-statement
+		jump-statement
+
+(6.8.1) labeled-statement:
+		case constant-expression : statement
+		default : statement
+
+(6.8.2) compound-statement:
+		{ block-item-list_opt }
+
+(6.8.3) expression-statement:
+		expression_opt ;
+
+(6.8.4) selection-statement:
+		if ( conditional-expression ) statement
+		if ( conditional-expression ) statement else statement
+		switch ( conditional-expression ) statement
+
+(6.8.5) iteration-statement:
+		while ( conditional-expression ) statement
+		do statement while ( conditional-expression );
+
+(6.8.6) jump-statement:
+		continue ;
+		break ;
+		return expression_opt ;
+
+A.2.1 Expressions
+(6.5.17) expression:
+		assignment-expression{, assignment-expression}
+
+(6.5.16) assignment-expression:
+		unary-expression assignment-operator assignment-expression
+
+(6.5.15) conditional-expression:
+		logical-OR-expression
+		logical-OR-expression ? expression : conditional-expression
+		
+(6.5.14) logical-OR-expression:
+		logical-AND-expression{|| logical-AND-expression}
+
+(6.5.13) logical-AND-expression:
+		inclusive-OR-expression{&& inclusive-OR-expression}
+
+		
+(6.5.12) inclusive-OR-expression:
+		exclusive-OR-expression{| exclusive-OR-expression}
+
+		
+(6.5.11) exclusive-OR-expression:
+		AND-expression{^ AND-expression}
+
+(6.5.10) AND-expression:
+		equality-expression{& equality-expression}
+
+						
+(6.5.9) equality-expression:
+		relational-expression{== relational-expression}
+		relational-expression{!= relational-expression}
+
+(6.5.8) relational-expression:
+		shift-expression{< shift-expression}
+	    shift-expression{> shift-expression}
+		shift-expression{<= shift-expression}
+		shift-expression{<= shift-expression}
+
+(6.5.7) shift-expression:
+		additive-expression{<< additive-expression}
+		additive-expression{>> additive-expression}
+
+(6.5.6) additive-expression:
+		multiplicative-expression{+ multiplicative-expression}
+	    multiplicative-expression{- multiplicative-expression}
+						
+(6.5.5) multiplicative-expression:
+		cast-expression{ * cast-expression}
+		cast-expression{ / cast-expression}
+		cast-expression{ % cast-expression}
+
+(6.5.4) cast-expression:
+		unary-expression
+		( type-name ) cast-expression
+
+(6.5.1)primary-expression:
+		identifier
+
+(6.5.2)postfix-expression:
+        primary-expression{[ expression ]}
+		primary-expression{( argument-expression-list_opt )}
+		primary-expression{. identifier}
+		primary-expression{-> identifier}
+		primary-expression{++}
+		primary-expression{--}
+		primary-expression{-> identifier}
+
+(6.5.2) argument-expression-list:
+		assignment-expression{, assignment-expression}
+		
+(6.5.3) unary-expression:
+		postfix-expression
+		unary-operator cast-expression
+
+(6.5.3) unary-operator: one of
+		& * + - ~ !
+		

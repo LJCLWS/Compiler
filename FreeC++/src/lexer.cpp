@@ -3,6 +3,7 @@
 #include <iostream>
 #include <windows.h>
 #include <iomanip>
+#include "parser_.h"
 
 using namespace std;
 
@@ -31,10 +32,13 @@ int lexer::identifier(void)
 			}
 			else
 			{				
-				TempToken.Ch_class = end_state_to_code(state_before, token);
-				TempToken.Ch_code = 0;
+				TempToken.token_code = end_state_to_code(state_before, token);
+				//类型关键字
+				if(TempToken.token_code>= KW_void &&TempToken.token_code <= KW__Imaginary)TempToken.sytax_code =type_specifier;
+				else if(TempToken.token_code >= KW_typedef &&TempToken.token_code <= KW_register)TempToken.sytax_code = storage_class_specifier;
+				else TempToken.sytax_code = 0;
 				TempToken.spelling = token;
-				if(TempToken.Ch_class>=0)TokenListQueue.push(TempToken);
+				if(TempToken.token_code>=0)TokenListQueue.push(TempToken);
 
 				color_token();
 
@@ -48,14 +52,14 @@ int lexer::identifier(void)
 }
 
 
-int lexer::state_change(int ch_code)
+int lexer::state_change(int sytax_code)
 {
 	switch (state)
 	{
 	 case 1: //标识符
-		 if      (ch_code == 0 )state =  1;     //空格
-		 else if (ch_code == 1 )state =  2;     //字母
-		 else if (ch_code == 2 )state =  3;     //数字
+		 if      (sytax_code == 0 )state =  1;     //空格
+		 else if (sytax_code == 1 )state =  2;     //字母
+		 else if (sytax_code == 2 )state =  3;     //数字
 
 		 else if (ch == '[')state = 24;    //[
 		 else if (ch == ']')state = 25;    //]
@@ -87,20 +91,20 @@ int lexer::state_change(int ch_code)
 		 else if (ch==',')state =22;    //,
 		 else if (ch == ';')state =23;    //;
 
-		 else if (ch_code == -1)state = -1;    //非法输入
+		 else if (sytax_code == -1)state = -1;    //非法输入
 
 		 else state = 0;
 
 		 break;
 	 case 2: //标识符
-		 if (ch_code == 1)state= 2;        //字母
-		 else if (ch_code == 2)state= 2;        //数字
+		 if (sytax_code == 1)state= 2;        //字母
+		 else if (sytax_code == 2)state= 2;        //数字
 		 else
 			 state= 0;
 		 break;
 	 case 3: //数字
-		 if (ch_code == 2)state= 3;         //数字
-		 else if (ch_code == 1)state = -2;     //error
+		 if (sytax_code == 2)state= 3;         //数字
+		 else if (sytax_code == 1)state = -2;     //error
 		 else if (ch=='.')state= 8;         //.
 		 else
 			 state= 0;
@@ -123,15 +127,15 @@ int lexer::state_change(int ch_code)
 		 else state = 0;
 		 break;
 	 case 7:
-		 if (ch_code == 2)state = 7;        //数字
+		 if (sytax_code == 2)state = 7;        //数字
 		 else state = 0;
 		 break;
 	 case 8://.
-		 if (ch_code == 2)state = 7;        //数字
+		 if (sytax_code == 2)state = 7;        //数字
 		 else;//error
 		 break;
 	 case 9://'
-		 if (ch_code == 1)state= 10;        //字母
+		 if (sytax_code == 1)state= 10;        //字母
 		 else;//error;
 		 break;
 	 case 10:
@@ -215,7 +219,7 @@ int lexer::state_change(int ch_code)
 		 state = 0;
 		 break;
 	 case 40:
-		 if (ch_code == 2)state = 7;
+		 if (sytax_code == 2)state = 7;
 		 else if (ch == '.')state = 68;
 
 		 else state = 0;
@@ -322,8 +326,8 @@ int lexer::state_change(int ch_code)
 
 int lexer::search(string token)
 {
-	for (int i = KW_auto; i < KW__Imaginary; i++)
-		if (token==TokenTable[i].spelling) return i;
+	for (int i = KW_void; i <= KW_default; i++)
+		if (token==TokenTable[i].spelling) return TokenTable[i].token_code;
 
 	return 0;//标识符
 }
@@ -535,7 +539,7 @@ void lexer::Lexer_output(void)
 		static int i = 1;
 		TokenListType t = TokenListQueue.front();
 		TokenListQueue.pop();
-		cout <<setw(4) << "<"<< t.Ch_class<< "," << t.spelling.c_str() << ">"<<"	" << right;
+		cout <<setw(4) << "<"<< t.token_code<< "," << t.sytax_code << "," << t.spelling.c_str() << ">"<<"	" << right;
 		if (i++ % 5 == 0)cout << endl;
 	} 
 	cout << endl;
@@ -546,17 +550,17 @@ void lexer::Lexer_output(void)
 void lexer::color_token(void)
 {
 	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-	    if (TempToken.Ch_class == 0)     //标识符
+	    if (TempToken.token_code == 0)     //标识符
 			SetConsoleTextAttribute(h, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-		else if (TempToken.Ch_class == 1)  //字符常量
+		else if (TempToken.token_code == 1)  //字符常量
 			SetConsoleTextAttribute(h, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-		else if (TempToken.Ch_class == 2)  //字符串常量
+		else if (TempToken.token_code == 2)  //字符串常量
 			SetConsoleTextAttribute(h, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-		else if (TempToken.Ch_class == 3)  //数字常量
+		else if (TempToken.token_code == 3)  //数字常量
 			SetConsoleTextAttribute(h, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-		else if (TempToken.Ch_class <= KW__Imaginary&& TempToken.Ch_class >=KW_auto)//关键字
+		else if (TempToken.token_code <= KW__Imaginary&& TempToken.token_code >=KW_auto)//关键字
 			SetConsoleTextAttribute(h, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-		else if (TempToken.Ch_class <= TK_HASH2 && TempToken.Ch_class >= TK_OPENBR)//界符
+		else if (TempToken.token_code <= TK_HASH2 && TempToken.token_code >= TK_OPENBR)//界符
 			SetConsoleTextAttribute(h, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
 		else
 			SetConsoleTextAttribute(h, FOREGROUND_RED| FOREGROUND_INTENSITY);

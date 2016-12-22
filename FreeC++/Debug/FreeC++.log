@@ -1,8 +1,9 @@
-﻿  semantic.cpp
-  lexer.cpp
-c:\program files (x86)\windows kits\8.1\include\um\wingdi.h(114): warning C4005: 'ERROR': macro redefinition
-  c:\users\ryan\onedrive\iot\compilers\lab\compiler\freec++\src\error.h(3): note: see previous definition of 'ERROR'
+﻿  parser.cpp
   Generating Code...
-c:\users\ryan\onedrive\iot\compilers\lab\compiler\freec++\src\lexer.cpp(527): warning C4715: 'lexer::ch_to_num': not all control paths return a value
-c:\users\ryan\onedrive\iot\compilers\lab\compiler\freec++\src\semantic.cpp(105): warning C4715: 'SemParser::expression_parser': not all control paths return a value
-  FreeC++.vcxproj -> C:\Users\ryan\OneDrive\iot\Compilers\lab\Compiler\Debug\FreeC++.exe
+c:\users\ryan\onedrive\iot\compilers\curriculum design\compiler\freec++\src\parser.cpp(39): warning C4715: 'parser::translation_unit': not all control paths return a value
+  Compiling...
+  main.cpp
+  lexer.cpp
+  Generating Code...
+c:\users\ryan\onedrive\iot\compilers\curriculum design\compiler\freec++\src\lexer.cpp(531): warning C4715: 'lexer::ch_to_num': not all control paths return a value
+  FreeC++.vcxproj -> C:\Users\ryan\OneDrive\iot\Compilers\Curriculum Design\Compiler\Debug\FreeC++.exe

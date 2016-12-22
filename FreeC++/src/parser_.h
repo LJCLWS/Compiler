@@ -6,66 +6,69 @@
 
 using namespace std;
 
-#define LL1
 
-#define NT_E   -1
-#define NT_E1  -2
-#define NT_T   -3
-#define NT_T1  -4
-#define NT_F   -5
+enum syntax_express {
+	type_specifier = -100,
+	storage_class_specifier,
+	unary_operator,
+	assignment_operator,
 
-#define T_NULL    0
-#define T_I       1
-#define T_W0      2
-#define T_W1      3
-#define T_LEFT    TK_OPENPA
-#define T_RIGHT   TK_CLOSEPA
+	function_name,
+	var_name,
+    argv_name,
 
-#define BOTH_END   TK_SEMICOLON //TK_HASH
 
+};
+
+#define T_NULL     0
+#define BOTH_END   TK_SEMICOLON
 
 class parser:public lexer 
 {
 public:
 	parser(char *fin):lexer(fin){};
 	~parser() {};
-	//LL1
-	//语法分析器的初始化，包括结尾标识符入栈和起始标志入栈
-	virtual int init_parser();
-	//语法分析器主体部分
-	virtual int expression_parser();
-	//把token序列的元素对应到文法表示的终结符
-	virtual int token_to_gramer(int token);
-	//根据给的非终结符与终结符到LL(1)分析表中查找路径
-	virtual int LookUp(int stack, int queue);
 
-	//递归下降主程序
-	int recursive_Z();
-	//递归下降子程序
-	int recursive_E();
-	int recursive_E1();
-	int recursive_T();
-	int recursive_T1();
-	int recursive_F();
+	//语法分析器的初始化，包括结尾标识符入栈和起始标志入栈
+	virtual int pop_terminal();
+	//把token序列的元素对应到文法表示的终结符
+
+	//语法分析入口
+	int translation_unit();
+	int external_declaration();
+	int function_definition();
+	int declaration_specifiers();
+	int declarator();
+	int direct_declarator();
+	int parameter_type_list();
+	int parameter_list();
+	int parameter_declaration();
+	int compound_statement();
+	int block_item_list();
+	int block_item();
+	int declaration();
+	int statement();
+	int init_declarator_list();
+	int init_declarator();
+	int initializer();
+	int labeled_statement();
+	int selection_statement();
+	int iteration_statement();
+	int jump_statement();
+
+
+	int expression();
+	int assignment_expression();
+	int conditional_expression();
+	int logical_OR_expression();
+	int logical_AND_expression();
+	int inclusive_OR_expression();
+	int exclusive_OR_expression();
 
 private:
 	stack<int> TempRulesStack;
-	TokenListType temp_token;
-	int temp_terminal = 0;
+	TokenListType temp_terminal;
 	ExceptionClass error;
-
-	const vector<int> gramer[9] =
-	{
-		{ 0 },
-		{ NT_T,NT_E1 },
-		{ T_W0,NT_T,NT_E1 },
-		{ T_NULL },
-		{ NT_F,NT_T1 },
-		{ T_W1,NT_F,NT_T1 },
-		{ T_NULL },
-		{ T_I },
-		{ T_LEFT,NT_E,T_RIGHT }
-	};
 
 };
 
