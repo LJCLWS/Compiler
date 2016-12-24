@@ -11,41 +11,31 @@
 
 using namespace std;
 
-#define LEXER_OUTPRINT
-//#define PARSER_ANALYZE
+//#define LEXER_OUTPRINT
+#define PARSER_ANALYZE
 
 int main(int argc, char ** argv)
 {	
 	//词法处理机
-	parser semparser= parser(argv[1]);
+	parser result= parser(argv[1]);
 
-	if (semparser.identifier() == EXCEPTION)return 0;
+	if (result.token_scanner() == EXCEPTION)return 0;
 #ifdef  LEXER_OUTPRINT
-	semparser.Lexer_output();//token序列输出
+	result.Lexer_output();//token序列输出
 #endif
 
 	//语法分析器
 #ifndef LEXER_OUTPRINT
 #ifdef  PARSER_ANALYZE
-#ifdef  LL1
-	try {
-		semparser.init_parser();
-		semparser.expression_parser();
-	}
-	catch (string str)
-	{
-		cout << str.c_str() << endl;
-	}
-#else
+
 	try{ 
-		semparser.recursive_Z();
+		result.translation_unit();
 	}
-	catch (string str)
+	catch (int str)
 	{
-		cout << str.c_str() << endl;
+		cout << str << endl;
 	}
-	
-#endif
+
 #endif
 #endif
 	

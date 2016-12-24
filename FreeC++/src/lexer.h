@@ -13,10 +13,13 @@ using namespace std;
 #define is_digit(c)   (c >= '0' && c <= '9')
  
 //0为标识符类码
+#define IDentifier 0
 //1为字符常数类码
+#define character_constant 1
 //2为字符串常量类码
+#define string_literal 2
 //3为数字常量
-
+#define digit_constant 3
 /* 关键字类码表 */
 enum KW_Table //KeyWords
 {
@@ -171,7 +174,7 @@ public:
 
 	virtual ~lexer() {};
 
-	int identifier(void);//词法分析器的主体函数
+	int token_scanner(void);//词法分析器的主体函数
 	int ch_to_num(char ch);//把识别的字符进行数字表示，返回值对应自动机的状态转换的条件
 
 	int state_change(int sytax_code);//进行状态转换，state为当前状态，sytax_code为转换条件
@@ -188,10 +191,10 @@ protected:
 	queue<TokenListType> TokenListQueue;
 	TokenTableType TokenTable[KW_TOKEN_NUM] =
 	{
-		{ 0,"0" },  //标识符
-		{ 1,"0" },  //字符常量
-		{ 2,"0" },  //字符串常量
-		{ 3,"0" },  //数字常量
+		{ IDentifier,"0" },  //标识符
+		{ character_constant,"0" },  //字符常量
+		{ string_literal,"0" },  //字符串常量
+		{ digit_constant,"0" },  //数字常量
 		{ KW_void,"void" },
 		{ KW_char,"char" },
 		{ KW_short,"short" },

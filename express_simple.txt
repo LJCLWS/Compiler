@@ -34,7 +34,6 @@ A.2.2 Declarations
 
 (6.7.5) parameter-type-list:
 		parameter-list
-		parameter-list , ...
 
 (6.7.5) parameter-list:
 		parameter-declaration{parameter-declaration}

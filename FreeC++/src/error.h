@@ -28,8 +28,21 @@
 #define PARSER_ERROR6   -15
 #define PARSER_ERROR7   -16
 #define PARSER_ERROR8   -17
+
 #define TK_END_MATCH_ERROR -18
 
+#define PARSER_ERROR9   -19
+#define PARSER_ERROR10   -20
+#define PARSER_ERROR11   -21
+#define PARSER_ERROR12   -22
+#define PARSER_ERROR13   -23
+#define PARSER_ERROR14   -24
+#define PARSER_ERROR15   -25
+#define PARSER_ERROR16   -26
+#define PARSER_ERROR17   -27
+#define PARSER_ERROR18   -28
+#define PARSER_ERROR19   -29
+#define PARSER_ERROR20   -30
 
 
 class ExceptionClass

@@ -1,0 +1,77 @@
+A.2.4 External definitions
+(6.9) translation-unit:
+		external-declaration translation-unit
+
+(6.9) external-declaration:
+        declaration declarator
+		function-definition
+
+(6.9.1) function-definition:
+		declaration  ( parameter-type-list_opt ) { block-item-list_opt }
+
+A.2.2 Declarations
+declaration:
+        type-specifier identifier
+
+declarator:
+		{(= initializer){£¬identifier}};
+
+(6.7.8) initializer:
+		constant
+		|string-literal
+
+(6.7.5) parameter-type-list:
+		declaration {, declaration}
+
+(6.8.2) block-item-list:
+		block-item {block-item}
+		
+(6.8.2) block-item:
+		declaration declarator
+        statement
+
+A.2.3 Statements
+(6.8) statement:
+		compound-statement
+		expression-statement
+		selection-statement
+		iteration-statement
+		jump-statement
+
+(6.8.2) compound-statement:
+		{ block-item-list_opt }
+
+(6.8.3) expression-statement:
+		expression_opt ;
+
+(6.8.4) selection-statement:
+		if ( conditional-expression ) statement IF(if)
+		if ( conditional-expression ) statement IF(if) else EL(el) statement IE(ie)
+
+(6.8.5) iteration-statement:
+		while WH() ( conditional-expression ) DO(do) statement WE(we)
+
+(6.8.6) jump-statement:
+		return additive-expression_opt ;
+
+A.2.1 Expressions
+(6.5.16) expression:
+		identifier PUSH(identifier) = additive-expression ASSI(=) 
+
+(6.5.15) conditional-expression:
+		additive-expression{< additive-expression GET(>)}
+	    additive-expression{> additive-expression GET(<)}
+		additive-expression{== additive-expression GET(==)}
+	    additive-expression{!= additive-expression GET(!=)}
+
+(6.5.6) additive-expression:
+		multiplicative-expression{+ multiplicative-expression GET(+)}
+	    multiplicative-expression{- multiplicative-expression GET(-)}
+						
+(6.5.5) multiplicative-expression:
+		unary-expression{ * unary-expression GET(*)}
+		unary-expression{ / unary-expression GET(/)}
+
+unary-expression:
+		identifier|digit-constant PUSH(identifier|digit-constant)
+		(additive-expression)

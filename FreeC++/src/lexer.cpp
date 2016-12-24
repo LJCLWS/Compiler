@@ -8,7 +8,7 @@
 using namespace std;
 
 //´Ê·¨·ÖÎöÆ÷
-int lexer::identifier(void)
+int lexer::token_scanner(void)
 {
 	    state = 1;
 		
@@ -47,7 +47,9 @@ int lexer::identifier(void)
 				token = "";
 			}
 		}
-
+		TempToken.token_code = EOF;
+		TempToken.spelling = "EOF";
+		TokenListQueue.push(TempToken);
 		return 0;
 }
 

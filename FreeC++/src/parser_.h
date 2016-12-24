@@ -37,33 +37,33 @@ public:
 	int translation_unit();
 	int external_declaration();
 	int function_definition();
-	int declaration_specifiers();
+	int declaration();
 	int declarator();
-	int direct_declarator();
+	int initializer();
 	int parameter_type_list();
-	int parameter_list();
-	int parameter_declaration();
-	int compound_statement();
 	int block_item_list();
 	int block_item();
-	int declaration();
-	int statement();
-	int init_declarator_list();
-	int init_declarator();
-	int initializer();
-	int labeled_statement();
-	int selection_statement();
-	int iteration_statement();
-	int jump_statement();
 
+	int statement();
+	int compound_statement();
+	int expression_statement();
+	int selection_statement();
+	int IF(int kw_if);
+	int EL(int kw_else);
+	int IE(int ie);
+	int iteration_statement();
+	int WH(int wh);
+	int DO(int kw_do);
+	int WE(int we);
+	int jump_statement();
 
 	int expression();
 	int assignment_expression();
+	int unary_expression();
 	int conditional_expression();
-	int logical_OR_expression();
-	int logical_AND_expression();
-	int inclusive_OR_expression();
-	int exclusive_OR_expression();
+	int additive_expression();
+	int multiplicative_expression();
+	
 
 private:
 	stack<int> TempRulesStack;
