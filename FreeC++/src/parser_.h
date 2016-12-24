@@ -36,7 +36,6 @@ public:
 	//语法分析入口
 	int translation_unit();
 	int external_declaration();
-	int function_definition();
 	int declaration();
 	int declarator();
 	int initializer();
@@ -46,7 +45,6 @@ public:
 
 	int statement();
 	int compound_statement();
-	int expression_statement();
 	int selection_statement();
 	int IF(int kw_if);
 	int EL(int kw_else);
@@ -56,14 +54,13 @@ public:
 	int DO(int kw_do);
 	int WE(int we);
 	int jump_statement();
+	int expression_statement();
 
 	int expression();
-	int assignment_expression();
-	int unary_expression();
 	int conditional_expression();
 	int additive_expression();
 	int multiplicative_expression();
-	
+	int unary_expression();
 
 private:
 	stack<int> TempRulesStack;

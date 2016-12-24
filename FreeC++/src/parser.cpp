@@ -22,7 +22,12 @@ return temp_terminal.token_code;
 //递归下降主程序
 int parser::translation_unit() 
 {
-	pop_terminal();
+	static int is_first = 0;
+	if (is_first == 0)
+	{
+		pop_terminal();
+		is_first++;
+	}
 	external_declaration();
 
 	if (temp_terminal.token_code == EOF)
@@ -45,7 +50,22 @@ int parser::external_declaration()
 	if (temp_terminal.token_code == TK_OPENPA)
 	{
 		pop_terminal();
-		if (temp_terminal.token_code != TK_CLOSEPA)parameter_type_list();
+		if (temp_terminal.token_code != TK_CLOSEPA)
+		{
+			parameter_type_list();
+			if (temp_terminal.token_code == TK_CLOSEPA)
+			{
+				pop_terminal();
+				if (temp_terminal.token_code == TK_BEGIN)
+				{
+					pop_terminal();
+					block_item_list();
+					if (temp_terminal.token_code == TK_END)pop_terminal();
+					else throw PARSER_ERROR1;
+				}
+				else throw PARSER_ERROR2;
+			}
+		}
 		else if (temp_terminal.token_code == TK_CLOSEPA)
 		{
 			pop_terminal();
@@ -184,7 +204,7 @@ int parser::statement()
 	{
 		if (temp_terminal.token_code == TK_SEMICOLON)
 			pop_terminal();
-		else expression();	
+		else expression_statement();	
 	}
 	return 0;
 }
@@ -309,11 +329,24 @@ int parser::jump_statement()
 		pop_terminal();
 		if (temp_terminal.token_code == TK_SEMICOLON);
 		else additive_expression();
+		if (temp_terminal.token_code == TK_SEMICOLON)pop_terminal();
+		else throw PARSER_ERROR15;
 	}
 	else throw PARSER_ERROR15;
 	return 0;
 }
 
+int parser::expression_statement()
+{
+	if (temp_terminal.token_code == TK_SEMICOLON)pop_terminal();
+	else
+	{
+		expression();
+		if (temp_terminal.token_code == TK_SEMICOLON)pop_terminal();
+		else throw PARSER_ERROR15;
+	}
+	return 0;
+}
 //递归下降子程序
 int parser::expression()
 {
@@ -325,7 +358,7 @@ int parser::expression()
 		{
 			pop_terminal();
 			additive_expression();
-
+			
 			//ASSI(= );
 		}
 		else throw PARSER_ERROR16;

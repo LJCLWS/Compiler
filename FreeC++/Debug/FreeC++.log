@@ -1,4 +1,4 @@
 ﻿  parser.cpp
-c:\users\ryan\onedrive\iot\compilers\curriculum design\compiler\freec++\src\parser.cpp(39): warning C4715: 'parser::translation_unit': not all control paths return a value
-c:\users\ryan\onedrive\iot\compilers\curriculum design\compiler\freec++\src\parser.cpp(112): warning C4715: 'parser::declarator': not all control paths return a value
+c:\users\ryan\onedrive\iot\compilers\curriculum design\compiler\freec++\src\parser.cpp(44): warning C4715: 'parser::translation_unit': not all control paths return a value
+c:\users\ryan\onedrive\iot\compilers\curriculum design\compiler\freec++\src\parser.cpp(132): warning C4715: 'parser::declarator': not all control paths return a value
   FreeC++.vcxproj -> C:\Users\ryan\OneDrive\iot\Compilers\Curriculum Design\Compiler\Debug\FreeC++.exe
