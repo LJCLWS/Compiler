@@ -45,8 +45,8 @@ A.2.3 Statements
 		expression_opt ;
 
 (6.8.4) selection-statement:
-		if ( conditional-expression ) statement IF(if)
-		if ( conditional-expression ) statement IF(if) else EL(el) statement IE(ie)
+		if ( conditional-expression ) IF(if) statement 
+		if ( conditional-expression ) IF(if) statement else EL(el) statement IE(ie)
 
 (6.8.5) iteration-statement:
 		while WH() ( conditional-expression ) DO(do) statement WE(we)

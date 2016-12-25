@@ -144,14 +144,13 @@ typedef struct TokenTableType
 }TokenTableType;
 
 
-typedef struct TokenListType
+typedef struct TokenElementType
 {
 	int token_code;   //分类码
 	int sytax_code;    //语义码
 	string spelling;
-	//struct TokenListType *next;
 
-}TokenListType;
+}TokenElementType;
 
 
 
@@ -188,7 +187,7 @@ public:
 	inline void  getch() {ch = getc(fin);}  //从源文件中读取一个字符
 
 protected:
-	queue<TokenListType> TokenListQueue;
+	queue<TokenElementType> TokenListQueue;
 	TokenTableType TokenTable[KW_TOKEN_NUM] =
 	{
 		{ IDentifier,"0" },  //标识符
@@ -208,20 +207,23 @@ protected:
 		{ KW__Complex,"_Complex" },
 		{ KW__Imaginary,"_Imaginary" },
 
+
+
 		{ KW_struct,"struct" },
 		{ KW_union,"union" },
 		{ KW_enum,"enum" },
 		{ KW_typedef,"typedef" },
-		{ KW_volatile,"volatile" },
-
-		{ KW_auto,"auto" },
-		{ KW_const,"const" },
-		{ KW_static,"static" },
 		{ KW_extern,"extern" },
+		{ KW_static,"static" },
+		{ KW_auto,"auto" },
+		{ KW_register,"register" },
+
+		{ KW_volatile,"volatile" },
+		{ KW_const,"const" },
 		{ KW_inline,"inline" },
 		{ KW_return,"return" },
 		{ KW_sizeof,"sizeof" },
-		{ KW_register,"register" },
+
 		{ KW_restrict,"restrict" },
 		{ KW_if,"if" },
 		{ KW_else,"else" },
@@ -297,8 +299,8 @@ protected:
 	};
 
 private:
+	TokenElementType TempToken;
 	char ch;
-	TokenListType TempToken;
 	int state=0;  //0
 	int state_before=0;  //0
 	int code = 0;

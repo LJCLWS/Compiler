@@ -539,7 +539,7 @@ void lexer::Lexer_output(void)
 	while (TokenListQueue.size())
 	{
 		static int i = 1;
-		TokenListType t = TokenListQueue.front();
+		TokenElementType t = TokenListQueue.front();
 		TokenListQueue.pop();
 		cout <<setw(4) << "<"<< t.token_code<< "," << t.sytax_code << "," << t.spelling.c_str() << ">"<<"	" << right;
 		if (i++ % 5 == 0)cout << endl;

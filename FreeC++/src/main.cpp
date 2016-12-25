@@ -12,7 +12,7 @@
 using namespace std;
 
 //#define LEXER_OUTPRINT
-#define PARSER_ANALYZE
+//#define PARSER_ANALYZE
 
 int main(int argc, char ** argv)
 {	
@@ -43,16 +43,18 @@ int main(int argc, char ** argv)
 #ifndef LEXER_OUTPRINT
 #ifndef PARSER_ANALYZE
 	try {
-		semparser.init_parser();
-		if (!semparser.expression_parser())
-			semparser.Sem_outprint();
+		result.translation_unit();
 	}
-	catch (string str)
+	catch (int str)
 	{
-		cout << str.c_str() << endl;
+		cout << str << endl;
+		return 0;
 	}
+	result.sem_outprint();
 #endif
 #endif // !LEXER_OUTPRINT
+	//for (int i = 0; i < 200;i++)
+	//cout << result.sem_NEWT().c_str() << endl;
 
 	return 0;
 }

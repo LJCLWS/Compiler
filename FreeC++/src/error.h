@@ -43,6 +43,7 @@
 #define PARSER_ERROR18   -28
 #define PARSER_ERROR19   -29
 #define PARSER_ERROR20   -30
+#define PARAMETER_ERROR21  -31
 
 
 class ExceptionClass

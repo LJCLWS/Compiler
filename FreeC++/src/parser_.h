@@ -2,9 +2,13 @@
 
 #include <stack>
 #include <queue>
+#include "lexer.h"
 #include "error.h"
 
 using namespace std;
+
+#define IF_END -1
+#define WHILE_END -2
 
 
 enum syntax_express {
@@ -20,8 +24,14 @@ enum syntax_express {
 
 };
 
-#define T_NULL     0
-#define BOTH_END   TK_SEMICOLON
+typedef struct FourQtType
+{
+	string operation;
+	string aaa;
+	string bbb;
+	string ttt;
+}FourQtType;
+
 
 class parser:public lexer 
 {
@@ -46,13 +56,7 @@ public:
 	int statement();
 	int compound_statement();
 	int selection_statement();
-	int IF(int kw_if);
-	int EL(int kw_else);
-	int IE(int ie);
 	int iteration_statement();
-	int WH(int wh);
-	int DO(int kw_do);
-	int WE(int we);
 	int jump_statement();
 	int expression_statement();
 
@@ -61,11 +65,36 @@ public:
 	int additive_expression();
 	int multiplicative_expression();
 	int unary_expression();
+	
+	//中间代码生成（语法制导技术）
+	int iteration_WH(int wh);
+	int iteration_DO(int kw_do);
+	int iteration_WE(int we);
+
+	int selection_IF(int kw_if);
+	int selection_EL(int kw_else);
+	int selection_IE(int ie);
+
+	int expression_PUSH(TokenElementType id); //压栈函数(把当前 i 压入语义栈)
+	int expression_ASSI(int kw_assi);
+	int expression_GET(int w);
+	
+	void set_SEM_two_top();
+	TokenElementType get_SEM_temp_();
+	int  sem_SEND(int TokenCode, TokenElementType b, TokenElementType c, TokenElementType t);
+	TokenElementType sem_NEWT(void);
+	void sem_outprint();
+
 
 private:
-	stack<int> TempRulesStack;
-	TokenListType temp_terminal;
-	ExceptionClass error;
+	TokenElementType temp_terminal; //存放终结符的临时变量 
+	ExceptionClass error;        //异常类对象
 
+	FourQtType TempFourQt;     //存放四元式的临时变量
+	stack<TokenElementType> TempSem;     //语义栈
+	queue<FourQtType> TempQT;  //四元式区
+
+	TokenElementType TempSem_top;
+	TokenElementType TempSem_second_top;
+	TokenElementType TempSem_temp_;
 };
-

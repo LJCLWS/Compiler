@@ -5,12 +5,11 @@ int main()
   int a=1,b=5,c;
   float d=0;
   c=a+b;
-  return ;
-}
-int main()
+  if(3)b=5+c;
+else
+  while(6+4)
 {
-  int a=1,b=5,c;
-  float d=0;
-  c=a+b;
-  return 0;
+  b=5+c;
+}
+  return ;
 }

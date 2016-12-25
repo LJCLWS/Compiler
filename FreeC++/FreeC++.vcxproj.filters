@@ -48,5 +48,8 @@
     <Text Include="..\express_simple.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="..\custom.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
