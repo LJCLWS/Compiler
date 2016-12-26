@@ -1,6 +1,6 @@
 #pragma once
 
-#define EXCEPTION             -1
+#define EXCEPTION        -1
           
 
 #define IN_ERROR          -1

@@ -4,25 +4,12 @@
 #include <queue>
 #include "lexer.h"
 #include "error.h"
+#include "symtable.h"
 
 using namespace std;
 
 #define IF_END -1
 #define WHILE_END -2
-
-
-enum syntax_express {
-	type_specifier = -100,
-	storage_class_specifier,
-	unary_operator,
-	assignment_operator,
-
-	function_name,
-	var_name,
-    argv_name,
-
-
-};
 
 typedef struct FourQtType
 {
@@ -87,6 +74,8 @@ public:
 
 
 private:
+	int temp_type = 0;        //构建符号表用来临时保存标识符类型
+	TokenElementType temp_id;       //构建符号表用来临时保存标识符
 	TokenElementType temp_terminal; //存放终结符的临时变量 
 	ExceptionClass error;        //异常类对象
 

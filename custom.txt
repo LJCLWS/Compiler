@@ -3,7 +3,8 @@ A.2.4 External definitions
 		external-declaration translation-unit
 
 (6.9) external-declaration:
-        declaration declarator
+        declaration declarator   //查重定义
+		const type-specifier identifier = initializer ;  常量定义
 		function-definition
 
 (6.9.1) function-definition:

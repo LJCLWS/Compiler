@@ -6,6 +6,7 @@
 //#include "semantic.h"
 #include "error.h"
 #include <queue>
+#include "symtable.h"
 
 #pragma warning(disable:4996)
 
@@ -55,6 +56,10 @@ int main(int argc, char ** argv)
 #endif // !LEXER_OUTPRINT
 	//for (int i = 0; i < 200;i++)
 	//cout << result.sem_NEWT().c_str() << endl;
-
+	result.SymbolTable.SymbolList_print();
+	result.SymbolTable.SymbolFuctionList_print();
+	result.SymbolTable.FuctionList_print();
+	result.SymbolTable.ConstList_print();
+	result.SymbolTable.ActRecordList_print();
 	return 0;
 }

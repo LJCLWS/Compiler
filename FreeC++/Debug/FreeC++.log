@@ -1,4 +1,5 @@
-﻿  parser.cpp
-c:\users\ryan\onedrive\iot\compilers\curriculum design\compiler\freec++\src\parser.cpp(42): warning C4715: 'parser::translation_unit': not all control paths return a value
-c:\users\ryan\onedrive\iot\compilers\curriculum design\compiler\freec++\src\parser.cpp(130): warning C4715: 'parser::declarator': not all control paths return a value
+﻿  Skipping... (no relevant changes detected)
+  symtable.cpp
+  parser.cpp
+  main.cpp
   FreeC++.vcxproj -> C:\Users\ryan\OneDrive\iot\Compilers\Curriculum Design\Compiler\Debug\FreeC++.exe

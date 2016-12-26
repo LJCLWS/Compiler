@@ -43,55 +43,153 @@ int parser::translation_unit()
 
 int parser::external_declaration()
 {
-	declaration();
-	//函数
-	if (temp_terminal.token_code == TK_OPENPA)
+	if (temp_terminal.token_code == KW_const)
 	{
+		temp_type = temp_terminal.token_code;
 		pop_terminal();
-		if (temp_terminal.token_code != TK_CLOSEPA)
+		if (temp_terminal.sytax_code == type_specifier)
 		{
-			parameter_type_list();
-			if (temp_terminal.token_code == TK_CLOSEPA)
+			pop_terminal();
+			if (temp_terminal.token_code == IDentifier)
+			{
+				temp_id = temp_terminal;
+
+				try
+				{
+					//插入公共总表
+					if (SymbolTable.CommonListElement_insert(temp_id,temp_type, const_value,0));
+					else throw false;
+				}
+				catch (bool error)
+				{
+					if (error == false)
+					{
+						cout << endl << "变量重复定义" << endl;
+						exit(0);
+					}
+					else;
+				}
+				
+				pop_terminal();
+				if (temp_terminal.token_code == TK_ASSIGN)pop_terminal();
+				else throw START_ERROR;
+				if (temp_terminal.token_code == digit_constant || temp_terminal.token_code == character_constant
+					|| temp_terminal.token_code == string_literal)
+				{
+					//插入常量表
+					SymbolTable.ConstElement_insert(temp_terminal);
+					pop_terminal();
+				}
+				else throw START_ERROR;
+				if (temp_terminal.token_code == TK_SEMICOLON)pop_terminal();
+				else throw START_ERROR;
+			}
+			else throw START_ERROR;
+		}
+		else throw START_ERROR;
+	}
+	else
+	{
+		declaration();
+		//函数
+		if (temp_terminal.token_code == TK_OPENPA)
+		{
+			pop_terminal();
+			if (temp_terminal.token_code != TK_CLOSEPA)
+			{
+				parameter_type_list();
+				if (temp_terminal.token_code == TK_CLOSEPA)
+				{
+					pop_terminal();
+					if (temp_terminal.token_code == TK_BEGIN)
+					{
+						pop_terminal();
+						block_item_list();
+						if (temp_terminal.token_code == TK_END)
+						{
+							SymbolTable.is_fuction_entry = 0;
+							SymbolTable.SymbolFuctionList_insert();
+							SymbolTable.FunctionATList_insert(0, 0, SymbolTable.arg_number, 0, 0);
+							SymbolTable.arg_number = 0;
+							pop_terminal();
+						}
+						else throw PARSER_ERROR1;
+					}
+					else throw PARSER_ERROR2;
+				}
+			}
+			else if (temp_terminal.token_code == TK_CLOSEPA)
 			{
 				pop_terminal();
 				if (temp_terminal.token_code == TK_BEGIN)
 				{
 					pop_terminal();
 					block_item_list();
-					if (temp_terminal.token_code == TK_END)pop_terminal();
+					if (temp_terminal.token_code == TK_END)
+					{
+						SymbolTable.is_fuction_entry = 0;
+						pop_terminal();
+					}
 					else throw PARSER_ERROR1;
 				}
 				else throw PARSER_ERROR2;
 			}
+			else throw PARSER_ERROR3;
 		}
-		else if (temp_terminal.token_code == TK_CLOSEPA)
+		//声明
+		else if (temp_terminal.token_code == TK_SEMICOLON || temp_terminal.token_code == TK_COMMA || temp_terminal.token_code == TK_ASSIGN)
 		{
-			pop_terminal();
-			if (temp_terminal.token_code == TK_BEGIN)
-			{
-				pop_terminal();
-				block_item_list();
-				if (temp_terminal.token_code == TK_END)pop_terminal();
-				else throw PARSER_ERROR1;
-			}
-			else throw PARSER_ERROR2;
+			declarator();
 		}
-		else throw PARSER_ERROR3;
+		else throw PARSER_ERROR4;
 	}
-	//声明
-	else if(temp_terminal.token_code == TK_SEMICOLON|| temp_terminal.token_code == TK_COMMA|| temp_terminal.token_code == TK_ASSIGN)
-	{
-		declarator();
-	}
-	else throw PARSER_ERROR4;
 	return 0;
 }
 
 int parser::declaration()
 {
-	if (temp_terminal.sytax_code == type_specifier)pop_terminal();
-	else throw PARSER_ERROR20; //error
-	if (temp_terminal.token_code == IDentifier)pop_terminal();
+  if (temp_terminal.sytax_code == type_specifier)
+	{
+			temp_type = temp_terminal.token_code;
+			pop_terminal();
+		if (temp_terminal.token_code == IDentifier)
+		{
+			temp_id = temp_terminal;
+			pop_terminal();
+			//插入函数值表
+			if (temp_terminal.token_code == TK_OPENPA)
+			{
+				SymbolTable.is_fuction_entry = 1;
+				SymbolTable.TempSymbolFuctionList_insert(temp_id, temp_type, function_name, 0);
+				if (SymbolTable.CommonListElement_insert(temp_id, temp_type, var_name, 0));
+				else throw false;
+			}
+			else
+			{
+				try
+				{
+					if (SymbolTable.is_fuction_entry)
+					{
+						if (SymbolTable.TempSymbolFuctionList_insert(temp_id, temp_type, function_name, 0));
+						else throw false;
+					}
+					else 
+					{
+
+						//插入公共总表
+						if (SymbolTable.CommonListElement_insert(temp_id, temp_type, var_name, 0));
+						else throw false;
+					}
+				}
+					catch (bool error)
+					{
+						cout << endl << "变量重复定义" << endl;
+						exit(0);
+					}
+			}
+		}
+		else throw START_ERROR;
+	}
 	else throw START_ERROR;
 	return 0;
 }
@@ -109,7 +207,30 @@ int parser::declarator()
 			else if (temp_terminal.token_code == TK_COMMA) //,再来
 			{
 				pop_terminal();
-				if (temp_terminal.token_code == IDentifier)pop_terminal();
+				if (temp_terminal.token_code == IDentifier)
+				{
+					try
+					{
+						//插入公共总表
+						if (SymbolTable.is_fuction_entry)
+						{
+							if (SymbolTable.TempSymbolFuctionList_insert(temp_terminal, temp_type, var_name, temp_type));
+							else throw false;
+						}
+						else
+						{
+							if (SymbolTable.CommonListElement_insert(temp_terminal, temp_type, var_name, temp_type));
+							else throw false;
+						}
+					}
+					catch (bool error)
+					{
+						cout << endl << "变量重复定义"<< endl;
+						exit(0);
+					}
+
+					pop_terminal();
+				}
 				else throw PARSER_ERROR5;
 			}
 			else throw PARSER_ERROR6;
@@ -117,7 +238,20 @@ int parser::declarator()
 
 		case TK_COMMA:
 			pop_terminal();
-			if (temp_terminal.token_code == IDentifier)pop_terminal();
+			if (temp_terminal.token_code == IDentifier)
+			{
+				try
+				{
+					if(SymbolTable.CommonListElement_insert(temp_terminal, temp_type, var_name, temp_type));
+					else throw false;
+				}
+				catch (bool error)
+				{
+					cout << endl << "变量重复定义：" << endl;
+					exit(0);
+				}
+				pop_terminal();
+			}
 			else throw PARSER_ERROR7;
 			break;
 
@@ -134,6 +268,7 @@ int parser::initializer()
 	if (temp_terminal.token_code == digit_constant || temp_terminal.token_code == character_constant
 		|| temp_terminal.token_code == string_literal)
 	{
+		temp_id = temp_terminal;
 		pop_terminal();
 	}
 	else throw PARSER_ERROR9;
@@ -143,10 +278,12 @@ int parser::initializer()
 int parser::parameter_type_list()
 {
 	declaration();
+	SymbolTable.arg_number++;  //参数个数计数
 	while (temp_terminal.token_code == TK_COMMA)
 	{
 		pop_terminal();
 		declaration();
+		SymbolTable.arg_number++;
 	}
 	return 0;
 }
@@ -531,7 +668,7 @@ TokenElementType parser::sem_NEWT(void)
 	//创建临时变量t1~t1000
 	static int symbol = 0;
 	string temp_str = "t";
-	TokenElementType temp;
+	TokenElementType temp_type;
 
 	char chr = '0';
 	chr += symbol/100;
@@ -547,9 +684,9 @@ TokenElementType parser::sem_NEWT(void)
 
 	symbol++;
 
-	temp.spelling = temp_str;
+	temp_type.spelling = temp_str;
 
-	return temp;
+	return temp_type;
 }
 
 void parser::sem_outprint()
