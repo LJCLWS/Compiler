@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stack>
-#include <queue>
+#include <vector>
 #include "lexer.h"
 #include "error.h"
 #include "symtable.h"
@@ -14,9 +14,9 @@ using namespace std;
 typedef struct FourQtType
 {
 	string operation;
-	string aaa;
-	string bbb;
-	string ttt;
+	SymbolListCommon_Type aaa;
+	SymbolListCommon_Type bbb;
+	SymbolListCommon_Type ttt;
 }FourQtType;
 
 
@@ -24,7 +24,7 @@ class parser:public lexer
 {
 public:
 	parser(char *fin):lexer(fin){};
-	~parser() {};
+	virtual ~parser() {};
 
 	//语法分析器的初始化，包括结尾标识符入栈和起始标志入栈
 	virtual int pop_terminal();
@@ -72,6 +72,8 @@ public:
 	TokenElementType sem_NEWT(void);
 	void sem_outprint();
 
+protected:
+	vector<FourQtType> TempQT;  //四元式区
 
 private:
 	int temp_type = 0;        //构建符号表用来临时保存标识符类型
@@ -79,9 +81,8 @@ private:
 	TokenElementType temp_terminal; //存放终结符的临时变量 
 	ExceptionClass error;        //异常类对象
 
-	FourQtType TempFourQt;     //存放四元式的临时变量
 	stack<TokenElementType> TempSem;     //语义栈
-	queue<FourQtType> TempQT;  //四元式区
+	
 
 	TokenElementType TempSem_top;
 	TokenElementType TempSem_second_top;

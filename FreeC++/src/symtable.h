@@ -2,7 +2,6 @@
 #include <map>
 #include <string>
 #include <unordered_map>
-#include <queue>
 #include <stack>
 
 using namespace std;
@@ -134,8 +133,10 @@ enum syntax_express {
 	storage_class_specifier,
 	function_name,
 	var_name,
+	temp_var_name,
 	argv_name,
 	const_value,
+
 };
 
 typedef struct TokenElementType
@@ -153,18 +154,18 @@ typedef struct SymbolListCommon_Type
 	int type;
 	int cat;
 	int addr;
-
+	int is_active;
 }SymbolListCommon_Type;
 
 //符号总表
-typedef struct SymbolListFuction_Type
-{
-	string name;
-	int type;
-	int cat;
-	int addr;
-
-}SymbolListFuction_Type;
+//typedef struct SymbolListCommon_Type
+//{
+//	string name;
+//	int type;
+//	int cat;
+//	int addr;
+//	int is_active;
+//}SymbolListCommon_Type;
 
 //常量表
 typedef struct ConstList_Type
@@ -201,51 +202,38 @@ class symtable
   public:
 	  int is_fuction_entry = 0;
 	  int arg_number = 0;
-	  vector<vector<SymbolListFuction_Type>>SymbolFuctionList;     //函数表
 
 	  symtable() {};
 	  ~symtable() {};
-	 /* void set_CommonList_cat(TokenElementType ident,int cat);
-	  void set_CommonList_type(TokenElementType ident,int type_in);
-	  void set_CommonList_addr(TokenElementType ident, int type);
-
-	  void set_SymbolFuctionList_cat(TokenElementType ident, int cat);
-	  void set_SymbolFuctionList_type(TokenElementType ident, int type_in);*/
-	  //void set_SymbolFuctionList_addr(TokenElementType ident, int type);
 
 	  bool CommonListElement_insert(TokenElementType ident, int type, int cat, int addr);
-	  bool TempSymbolFuctionList_insert(TokenElementType ident, int type, int cat, int addr);
-	  bool SymbolFuctionList_insert();
+	  bool FuctionListEle_insert(TokenElementType ident, int type, int cat, int addr);
+	  bool FuctionList_insert();
 	  bool FunctionATList_insert(int level, int OFF, int argv_number, int arg_list_addr, int entry);
 	  bool ActRecordList_insert(TokenElementType ident);
 	  bool ConstElement_insert(TokenElementType ident);
 	  bool ArgList_insert(TokenElementType ident, int type, int cat, int addr);
 	 
 	  void SymbolList_print(void);
-	  void SymbolFuctionList_print(void);
+	  void FuctionListAT_print(void);
 	  void FuctionList_print(void);
 	  void ConstList_print(void);
 	  void ActRecordList_print(void);
 
+	  vector<vector<SymbolListCommon_Type>> get_FunctionList() { return FuctionList;}
+	  vector<SymbolListCommon_Type> get_SymbolList() { return oredered_SymbolList; }
   private:
-	SymbolListCommon_Type TempSymbolListElement;
-	
-	int address=0;
-	ConstList_Type TempConstListElement;
-	SymbolListFuction_Type TempSymbolFuctionElement;     //函数表临时元素的临时单元
+	vector<ConstList_Type> ConstList;       //常量表
 
-	unordered_map<string, SymbolListFuction_Type>TempSymbolFuctionListElement;   //存储函数表的临时元素（无序）
-	vector<SymbolListFuction_Type> oredered_TempSymbolFuctionListElement;    //存储函数表的临时元素（有序）
+	unordered_map<string, SymbolListCommon_Type>FuctionListEle;   //存储函数表的临时元素（无序）
+	vector<SymbolListCommon_Type> oredered_FuctionListEle;    //存储函数表的临时元素（有序）
+	vector<vector<SymbolListCommon_Type>>FuctionList;     //函数表
+	vector<FuctionList_Type>FuctionATList;      //函数属性表
 
 	unordered_map<string, SymbolListCommon_Type> SymbolList;  //符号总表(无序）
-	queue<SymbolListCommon_Type> oredered_SymbolList;         //符号总表（有序）
+	vector<SymbolListCommon_Type> oredered_SymbolList;         //符号总表（有序）
 
-
-	vector<FuctionList_Type>FuctionATList;      //函数属性表
-	vector<ConstList_Type> ConstList;       //常量表
 	stack<ActRecordList_Type> ActRecordList;   //活动表
 	vector<ArgList_Type> ArgList;
-
-
 };
 

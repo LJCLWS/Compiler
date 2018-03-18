@@ -1,0 +1,26 @@
+.data
+res	DD	?
+len	DD	?
+wid	DD	?
+tep	DD	?
+t0	DD	?
+t1	DD	?
+t2	DD	?
+t3	DD	?
+t4	DD	?
+t5	DD	?
+.code
+
+main PROC
+
+MOV	EAX,5
+MOV	EBX,3
+MOV	ECX,EBX
+ADD	EBX,1
+IMUL	EBX,EAX
+MOV	EDX,EBX
+CMP	EBX,EAX
+JNL	EL
+MOV	EBX,EAX
+ADD	EAX,ECX
+ADD	EAX,EDX

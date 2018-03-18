@@ -4,6 +4,7 @@
 #include <queue>
 #include <vector>
 #include <iostream>
+#include "object.h"
 #include "error.h"
 
 using namespace std;
@@ -11,8 +12,14 @@ using namespace std;
 int parser:: pop_terminal()
 {
 //token序号出队列
-temp_terminal = TokenListQueue.front();
-TokenListQueue.pop();
+//temp_terminal = TokenListQueue.front();
+	static int j = 0;
+	if (j < TokenListQueue.size())
+	{
+		temp_terminal = TokenListQueue[j];
+		j++;
+	}
+//TokenListQueue.pop();
 
 return temp_terminal.token_code;
 }
@@ -108,7 +115,7 @@ int parser::external_declaration()
 						if (temp_terminal.token_code == TK_END)
 						{
 							SymbolTable.is_fuction_entry = 0;
-							SymbolTable.SymbolFuctionList_insert();
+							SymbolTable.FuctionList_insert();
 							SymbolTable.FunctionATList_insert(0, 0, SymbolTable.arg_number, 0, 0);
 							SymbolTable.arg_number = 0;
 							pop_terminal();
@@ -128,6 +135,9 @@ int parser::external_declaration()
 					if (temp_terminal.token_code == TK_END)
 					{
 						SymbolTable.is_fuction_entry = 0;
+						SymbolTable.FuctionList_insert();
+						SymbolTable.FunctionATList_insert(0, 0, SymbolTable.arg_number, 0, 0);
+						SymbolTable.arg_number = 0;
 						pop_terminal();
 					}
 					else throw PARSER_ERROR1;
@@ -160,8 +170,8 @@ int parser::declaration()
 			if (temp_terminal.token_code == TK_OPENPA)
 			{
 				SymbolTable.is_fuction_entry = 1;
-				SymbolTable.TempSymbolFuctionList_insert(temp_id, temp_type, function_name, 0);
-				if (SymbolTable.CommonListElement_insert(temp_id, temp_type, var_name, 0));
+				SymbolTable.FuctionListEle_insert(temp_id, temp_type, function_name, 0);
+				if (SymbolTable.CommonListElement_insert(temp_id, temp_type, function_name, 0));
 				else throw false;
 			}
 			else
@@ -170,7 +180,7 @@ int parser::declaration()
 				{
 					if (SymbolTable.is_fuction_entry)
 					{
-						if (SymbolTable.TempSymbolFuctionList_insert(temp_id, temp_type, function_name, 0));
+						if (SymbolTable.FuctionListEle_insert(temp_id, temp_type, var_name, 0));
 						else throw false;
 					}
 					else 
@@ -214,7 +224,7 @@ int parser::declarator()
 						//插入公共总表
 						if (SymbolTable.is_fuction_entry)
 						{
-							if (SymbolTable.TempSymbolFuctionList_insert(temp_terminal, temp_type, var_name, temp_type));
+							if (SymbolTable.FuctionListEle_insert(temp_terminal, temp_type, var_name, temp_type));
 							else throw false;
 						}
 						else
@@ -475,31 +485,35 @@ int parser::expression()
 
 int parser::conditional_expression()
 {
-	/*  additive - expression{ < additive - expression GET(>) }
-		additive - expression{ > additive - expression GET(<) }
+	/*  additive - expression{ < additive - expression GET(<) }
+		additive - expression{ > additive - expression GET(>) }
 		additive - expression{ == additive - expression GET(== ) }
 		additive - expression{ != additive - expression GET(!= ) }*/
 	additive_expression();
 	if (temp_terminal.token_code == TK_LT)
 	{
+		pop_terminal();
 		additive_expression();
 		//GET(< );
 		expression_GET(TK_LT);
 	}
 	else if (temp_terminal.token_code == TK_GT)
 	{
+		pop_terminal();
 		additive_expression();
 		//GET(> );
 		expression_GET(TK_GT);
 	}
 	else if (temp_terminal.token_code == TK_EQ)
 	{
+		pop_terminal();
 		additive_expression();
 		//GET(== );
 		expression_GET(TK_EQ);
 	}
 	else if (temp_terminal.token_code == TK_NEQ)
 	{
+		pop_terminal();
 		additive_expression();
 		//GET(!= );
 		expression_GET(TK_NEQ);
@@ -526,7 +540,6 @@ int parser::additive_expression()
 		//GET(-);
 		expression_GET(TK_MINUS);
 	}
-	return 0;
 	return 0;
 }
 int parser::multiplicative_expression()
@@ -628,6 +641,7 @@ int parser::expression_ASSI(int kw_assi)
 int parser::expression_GET(int w)
 {
 	TokenElementType t = sem_NEWT();
+	SymbolTable.FuctionListEle_insert(t, KW_int, temp_var_name, 0);
 	set_SEM_two_top();
 	sem_SEND(w, TempSem_second_top, TempSem_top,t);
 	TempSem.push(t);
@@ -645,20 +659,28 @@ void parser::set_SEM_two_top()
 TokenElementType parser::get_SEM_temp_()
 {
 	TempSem_temp_.spelling = "_";
+	TempSem_temp_.token_code = A_NULL;
 	return TempSem_temp_;
 }
 
 int parser::sem_SEND(int TokenCode, TokenElementType b, TokenElementType c, TokenElementType t)
 {
+	FourQtType TempFourQt;     //存放四元式的临时变量
+
 	if(TokenCode>0)TempFourQt.operation = TokenTable[TokenCode].spelling;
 	else if (TokenCode == IF_END)TempFourQt.operation = "if_e";
 	else if (TokenCode == WHILE_END)TempFourQt.operation = "wh_e";
 	else ;
-	TempFourQt.aaa = b.spelling;
-	TempFourQt.bbb = c.spelling;
-	TempFourQt.ttt = t.spelling;
+	TempFourQt.aaa.name = b.spelling;
+	TempFourQt.aaa.type = b.token_code;
 
-	TempQT.push(TempFourQt);
+	TempFourQt.bbb.name = c.spelling;
+	TempFourQt.bbb.type = c.token_code;
+
+	TempFourQt.ttt.name = t.spelling;
+	TempFourQt.ttt.type = t.token_code;
+
+	TempQT.push_back(TempFourQt);
 
 	return 0;
 }
@@ -685,6 +707,7 @@ TokenElementType parser::sem_NEWT(void)
 	symbol++;
 
 	temp_type.spelling = temp_str;
+	temp_type.token_code = A_NULL;
 
 	return temp_type;
 }
@@ -692,11 +715,18 @@ TokenElementType parser::sem_NEWT(void)
 void parser::sem_outprint()
 {
 	cout << endl << "四元式如下：" << endl;
-	while (TempQT.size())
+	for (int i = 0; i < TempQT.size(); i++)
 	{
-		FourQtType t = TempQT.front();
-		TempQT.pop();
-		cout << "(" << t.operation.c_str() << "," << t.aaa.c_str() << "," << t.bbb.c_str() << "," << t.ttt.c_str() << ")" << endl;
-
+		cout << "(" << TempQT[i].operation.c_str() << "," << TempQT[i].aaa.name.c_str();
+		if (TempQT[i].aaa.is_active != A_NULL) 
+			cout<< "(" << TempQT[i].aaa.is_active << ")";
+		cout << "," << TempQT[i].bbb.name.c_str();
+		if (TempQT[i].bbb.is_active != A_NULL) 
+			cout<< "(" << TempQT[i].bbb.is_active << ")";
+		cout << "," << TempQT[i].ttt.name.c_str();
+		if (TempQT[i].ttt.is_active != A_NULL) 
+			cout << "(" << TempQT[i].ttt.is_active << ")";
+		cout << ")" << endl;
 	}
+	
 }

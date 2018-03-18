@@ -55,6 +55,9 @@
     <None Include="..\README.md">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\objectFile\object.asm">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\express_simple.txt">

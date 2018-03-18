@@ -28,7 +28,10 @@ int lexer::token_scanner(void)
 
 			if (state) {
 				if(state>1)token += ch;// 记录字符串;
+
+				#ifdef LEXER_OUTPRINT
 			    else cout << ch;//输出空格与换行
+                #endif
 			}
 			else
 			{				
@@ -38,7 +41,7 @@ int lexer::token_scanner(void)
 				else if(TempToken.token_code >= KW_typedef &&TempToken.token_code <= KW_register)TempToken.sytax_code = storage_class_specifier;
 				else TempToken.sytax_code = 0;
 				TempToken.spelling = token;
-				if(TempToken.token_code>=0)TokenListQueue.push(TempToken);
+				if(TempToken.token_code>=0)TokenListQueue.push_back(TempToken);
 
 				color_token();
 
@@ -49,7 +52,7 @@ int lexer::token_scanner(void)
 		}
 		TempToken.token_code = EOF;
 		TempToken.spelling = "EOF";
-		TokenListQueue.push(TempToken);
+		TokenListQueue.push_back(TempToken);
 		return 0;
 }
 
@@ -536,14 +539,21 @@ int lexer::ch_to_num(char ch)
 void lexer::Lexer_output(void)
 {
 	cout << endl<< "token list:" << endl;
-	while (TokenListQueue.size())
+	for (int i = 0; i < TokenListQueue.size(); i++)
+	{
+		static int j = 1;
+		cout << setw(4) << "<" << TokenListQueue[i].token_code << "," << TokenListQueue[i].sytax_code << "," << TokenListQueue[i].spelling.c_str() << ">" << "	" << right;
+		if (j++ % 5 == 0)cout << endl;
+	}
+
+	/*while (TokenListQueue.size())
 	{
 		static int i = 1;
 		TokenElementType t = TokenListQueue.front();
 		TokenListQueue.pop();
 		cout <<setw(4) << "<"<< t.token_code<< "," << t.sytax_code << "," << t.spelling.c_str() << ">"<<"	" << right;
 		if (i++ % 5 == 0)cout << endl;
-	} 
+	} */
 	cout << endl;
 }
 
@@ -567,5 +577,9 @@ void lexer::color_token(void)
 		else
 			SetConsoleTextAttribute(h, FOREGROUND_RED| FOREGROUND_INTENSITY);
 
+#ifdef LEXER_OUTPRINT
 		cout << TempToken.spelling.c_str();
+#endif // LEXER_OUTPRINT
+
+		
 }

@@ -1,0 +1,18 @@
+﻿  error.cpp
+  lexer.cpp
+  main.cpp
+  object.cpp
+  parser.cpp
+src\parser.cpp(187): warning C4101: 'error': unreferenced local variable
+src\parser.cpp(229): warning C4101: 'error': unreferenced local variable
+src\parser.cpp(251): warning C4101: 'error': unreferenced local variable
+  symtable.cpp
+src\symtable.cpp(63): warning C4101: 'type': unreferenced local variable
+  Generating code
+c:\users\ryan\onedrive\iot\compilers\curriculum design\compiler\freec++\src\lexer.cpp(533): warning C4715: 'lexer::ch_to_num': not all control paths return a value
+c:\users\ryan\onedrive\iot\compilers\curriculum design\compiler\freec++\src\error.cpp(18): warning C4715: 'ExceptionClass::token_error': not all control paths return a value
+c:\users\ryan\onedrive\iot\compilers\curriculum design\compiler\freec++\src\parser.cpp(267): warning C4715: 'parser::declarator': not all control paths return a value
+c:\users\ryan\onedrive\iot\compilers\curriculum design\compiler\freec++\src\parser.cpp(42): warning C4715: 'parser::translation_unit': not all control paths return a value
+  All 1315 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  FreeC++.vcxproj -> C:\Users\ryan\OneDrive\iot\Compilers\Curriculum Design\Compiler\x64\Release\FreeC++.exe

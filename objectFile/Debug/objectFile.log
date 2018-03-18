@@ -1,0 +1,8 @@
+﻿  Assembling test.asm...
+test.asm(1): error A2013: .MODEL must precede this directive
+test.asm(3): error A2034: must be in segment block : main
+test.asm(4): error A2034: must be in segment block
+test.asm(5): error A2034: must be in segment block
+test.asm(6): error A2034: must be in segment block
+test.asm(7): fatal error A1010: unmatched block nesting : main
+C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\BuildCustomizations\masm.targets(50,5): error MSB3721: The command "ml.exe /c /nologo /Zi /Fo"Debug\test.obj" /W3 /errorReport:prompt  /Tatest.asm" exited with code 1.

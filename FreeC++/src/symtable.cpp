@@ -6,9 +6,12 @@ using namespace std;
 
 bool symtable::CommonListElement_insert(TokenElementType ident,int type,int cat,int addr)
 {
-	TempSymbolListElement.name = ident.spelling;
-	TempSymbolListElement.type = type;
-	TempSymbolListElement.cat = cat;
+	static int address = 0;
+	SymbolListCommon_Type SymbolListEle;
+
+	SymbolListEle.name = ident.spelling;
+	SymbolListEle.type = type;
+	SymbolListEle.cat = cat;
 
 	if (type == KW_char)address += 1;
 	else if (type == KW_short)address += 2;
@@ -17,44 +20,46 @@ bool symtable::CommonListElement_insert(TokenElementType ident,int type,int cat,
 	else if (type == KW_float)address += 4;
 	else if (type == KW_double)address += 4;
 	else address = addr;
-	TempSymbolListElement.addr = address;
+	SymbolListEle.addr = address;
 
 	unordered_map<string, SymbolListCommon_Type>::iterator  iter;
 	pair<unordered_map<string, SymbolListCommon_Type>::iterator, bool > ret;
-	ret = SymbolList.insert(pair<string, SymbolListCommon_Type>(TempSymbolListElement.name, TempSymbolListElement));
-	if (ret.second) oredered_SymbolList.push(TempSymbolListElement);
+	ret = SymbolList.insert(pair<string, SymbolListCommon_Type>(SymbolListEle.name, SymbolListEle));
+	if (ret.second) oredered_SymbolList.push_back(SymbolListEle);
 	return ret.second;
 }
 
-bool symtable::TempSymbolFuctionList_insert(TokenElementType ident, int type, int cat, int addr)
+bool symtable::FuctionListEle_insert(TokenElementType ident, int type, int cat, int addr)
 {
+	SymbolListCommon_Type FuctionListEleEle;     //函数表临时元素的临时单元
 
-	TempSymbolFuctionElement.name = ident.spelling;
-	TempSymbolFuctionElement.type = type;
-	TempSymbolFuctionElement.cat = cat;
-	TempSymbolFuctionElement.addr = addr;
+	FuctionListEleEle.name = ident.spelling;
+	FuctionListEleEle.type = type;
+	FuctionListEleEle.cat = cat;
+	FuctionListEleEle.addr = addr;
 
-	unordered_map<string, SymbolListFuction_Type>::iterator  iter;
-	pair<unordered_map<string, SymbolListFuction_Type>::iterator, bool > ret;
-	ret = TempSymbolFuctionListElement.insert(pair<string, SymbolListFuction_Type>(TempSymbolFuctionElement.name, TempSymbolFuctionElement));
-	if (ret.second) oredered_TempSymbolFuctionListElement.push_back(TempSymbolFuctionElement);
+	unordered_map<string, SymbolListCommon_Type>::iterator  iter;
+	pair<unordered_map<string, SymbolListCommon_Type>::iterator, bool > ret;
+	ret = FuctionListEle.insert(pair<string, SymbolListCommon_Type>(FuctionListEleEle.name, FuctionListEleEle));
+	if (ret.second) 
+	oredered_FuctionListEle.push_back(FuctionListEleEle);
 
 	return ret.second;
 
 }
 
-bool symtable::SymbolFuctionList_insert()
+bool symtable::FuctionList_insert()
 {
-	vector<SymbolListFuction_Type> empty;
-	SymbolFuctionList.push_back(oredered_TempSymbolFuctionListElement);
-	oredered_TempSymbolFuctionListElement.clear();
-	TempSymbolFuctionListElement.clear();
-
+	FuctionList.push_back(oredered_FuctionListEle);
+	oredered_FuctionListEle.clear();
+	FuctionListEle.clear();
 	return true;
 }
+
 bool symtable::ConstElement_insert(TokenElementType ident)
 {
 	//ConstList.begin();
+	ConstList_Type TempConstListElement;
 	int type;
 	TempConstListElement.value = ident.spelling;
 	
@@ -83,49 +88,51 @@ bool symtable::FunctionATList_insert(int level, int OFF, int arg_number, int arg
 
 bool symtable::ActRecordList_insert(TokenElementType ident)
 {
-
+	ActRecordList_Type ActRecordListEle;
+	ActRecordListEle.value  = ident.spelling;
+	ActRecordList.push(ActRecordListEle);
 	return true;
 }
 
 bool symtable::ArgList_insert(TokenElementType ident, int type, int cat, int addr)
 {
-
+	ArgList_Type ArgListEle;
+	ArgListEle.name = ident.spelling;
+	ArgListEle.type = type;
+	ArgListEle.cat = cat;
+	ArgListEle.addr = addr;
+	ArgList.push_back(ArgListEle);
 	return true;
 }
 //输出符号表
 void symtable::SymbolList_print(void)
 {
-
 	cout << endl << "总符号表如下：" << endl;
-	while (oredered_SymbolList.size())
-	{
-		SymbolListCommon_Type t = oredered_SymbolList.front();
-		oredered_SymbolList.pop();
-		cout << SymbolList[t.name].name << "," << SymbolList[t.name].type << "," << SymbolList[t.name].cat << "," << SymbolList[t.name].addr << endl;
-	}
+	for (int i = 0; i < oredered_SymbolList.size(); i++)
+	cout << oredered_SymbolList[i].name << "," << oredered_SymbolList[i].type << "," << oredered_SymbolList[i].cat << /*"," << oredered_SymbolList[i].addr <<*/ endl;
 }
 
-void symtable::SymbolFuctionList_print(void)
+void symtable::FuctionList_print(void)
 {
 	cout << endl << "函数表：" << endl;
-		for (int i = 0; i < SymbolFuctionList.size(); i++)
+		for (int i = 0; i < FuctionList.size(); i++)
 		{
-			vector<SymbolListFuction_Type> temp;
-			temp = SymbolFuctionList[i];
+			vector<SymbolListCommon_Type> temp;
+			temp = FuctionList[i];
 				for (int j = 0; j < temp.size(); j++)
 				{
-					SymbolListFuction_Type t = temp[j];
-					cout << t.name << "," << t.type << "," << t.cat << "," << t.addr << endl;
+					SymbolListCommon_Type t = temp[j];
+					cout << t.name << "," << t.type << "," << t.cat /*<< "," << t.addr*/ << endl;
 				}
 			cout << endl;
 		}    
 }
-void symtable::FuctionList_print(void)
+void symtable::FuctionListAT_print(void)
 {
 	cout << endl << "函数属性表：" << endl;
 	for (int i = 0; i <  FuctionATList.size(); i++)
-		cout << FuctionATList[i].level<<","<< FuctionATList[i].OFF <<","<< FuctionATList[i].argv_number <<","
-		     << FuctionATList[i].arg_list_addr <<","<< FuctionATList[i].entry << endl;
+		cout << FuctionATList[i].level<<","<< FuctionATList[i].OFF <<","<< FuctionATList[i].argv_number /*<<","
+		     << FuctionATList[i].arg_list_addr */<<","<< FuctionATList[i].entry << endl;
 }
 void symtable::ConstList_print(void)
 {
@@ -136,6 +143,12 @@ void symtable::ConstList_print(void)
 void symtable::ActRecordList_print(void)
 {
 	cout << endl << "活动记录表：" << endl;
-
+	ActRecordList_Type Temp;
+	while (ActRecordList.size())
+	{
+		Temp = ActRecordList.top();
+		ActRecordList.pop();
+		cout << Temp.value << endl;
+	}
 }
 

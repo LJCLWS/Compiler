@@ -3,7 +3,7 @@ A.2.4 External definitions
 		external-declaration translation-unit
 
 (6.9) external-declaration:
-        declaration declarator   //查重定义
+        declaration declarator   
 		const type-specifier identifier = initializer ;  常量定义
 		function-definition
 
@@ -46,7 +46,7 @@ A.2.3 Statements
 		expression_opt ;
 
 (6.8.4) selection-statement:
-		if ( conditional-expression ) IF(if) statement 
+		if ( conditional-expression ) IF(if) statement IE(ie)
 		if ( conditional-expression ) IF(if) statement else EL(el) statement IE(ie)
 
 (6.8.5) iteration-statement:
@@ -76,3 +76,67 @@ A.2.1 Expressions
 unary-expression:
 		identifier|digit-constant PUSH(identifier|digit-constant)
 		(additive-expression)
+
+
+
+
+
+
+
+
+		表7-3 使用有符号数比较的JCC指令
+指 令
+描 述
+条 件
+别 名
+相反指令
+JG
+如果大于(>)则跳转
+符号标志=溢出标志或0标志=0
+JNLE
+JNG
+JNLE
+如果小于或等于(<=)则跳转
+符号标志=溢出标志或0标志=0
+JG
+JLE
+JGE
+如果大于或等于(>=)则跳转
+符号标志=溢出标志
+JNL
+JGE
+JNL
+如果不小于(不<)则跳转
+符号标志=溢出标志
+JGE
+JL
+JL
+如果小于(<)则跳转
+符号标志<>溢出标志
+JNGE
+JNL
+JNGE
+如果大于或等于(>=)跳转
+符号标志<>溢出标志
+JL
+JGE
+JLE
+如果小于或等于(<=)跳转
+符号标志<>溢出标志或0标志=1
+JNG
+JNLE
+JNG
+如果不大于(不>)则跳转
+符号标志<>溢出标志或0标志=1
+JLE
+JG
+JE
+如果等于(=)则跳转
+0标志=1
+JZ
+JNE
+JNE
+如果不等于(<>)则跳转
+0标志=0
+JNZ
+JE

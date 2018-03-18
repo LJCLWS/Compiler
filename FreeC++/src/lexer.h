@@ -2,6 +2,8 @@
 #define _LEXER_H
 #pragma warning(disable:4996)
 
+#define LEXER_OUTPRINT
+
 #include<cstdlib>
 #include<iostream>
 #include <queue>
@@ -35,12 +37,12 @@ public:
 				throw string("Can't find source file!\n");
 			}
 		}
-		catch (string e) {
+		catch (string e) 
+		{
 			cout << e.c_str()<<endl;
 			exit(0);
 		}	
 	};
-
 	virtual ~lexer() {};
 
 	int token_scanner(void);//词法分析器的主体函数
@@ -57,7 +59,7 @@ public:
 	inline void  getch() {ch = getc(fin);}  //从源文件中读取一个字符
 
 protected:
-	queue<TokenElementType> TokenListQueue;
+	vector<TokenElementType> TokenListQueue;
 	TokenTableType TokenTable[KW_TOKEN_NUM] =
 	{
 		{ IDentifier,"0" },  //标识符
